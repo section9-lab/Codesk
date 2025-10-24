@@ -17,12 +17,14 @@ to this in your browser, and you can call your Go code from devtools.
 ## Building
 
 To build a redistributable, production mode package, use `wails build`.
-1. build bin
+
+### 1. build bin
 ```sh
 cd ~/Documents/GitHub/Codesk
 wails build -clean -platform darwin/universal
 ```
-2. package dmg
+### 2. package dmg
+
 ```sh
 create-dmg \
   --volname "Codesk" \
@@ -32,7 +34,7 @@ create-dmg \
   --icon "Codesk.app" 200 190 \
   --app-drop-link 600 185 \
   --hide-extension "Codesk.app" \
-  "Codesk.dmg" \
+  "/Codesk_v0.0.1.dmg" \
   "build/bin/"
 ```
 
