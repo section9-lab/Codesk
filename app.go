@@ -2,17 +2,22 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"Codesk/backend/service"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx          context.Context
+	greetService *service.GreetService
+	timeService  *service.TimeService
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		greetService: service.NewGreetService(),
+		timeService:  service.NewTimeService(),
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -23,5 +28,10 @@ func (a *App) startup(ctx context.Context) {
 
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	return a.greetService.Greet(name)
+}
+
+// GetCurrentTime 获取当前时间
+func (a *App) GetCurrentTime() string {
+	return a.timeService.GetCurrentTime()
 }
