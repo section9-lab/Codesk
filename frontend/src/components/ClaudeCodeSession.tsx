@@ -14,22 +14,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover } from "@/components/ui/popover";
 import { api, type Session } from "@/lib/api";
+import { wailsListen } from "@/lib/wailsAdapter";
 import { cn } from "@/lib/utils";
 
-// Conditional imports for Tauri APIs
-let tauriListen: any;
+// Type for unlisten function
 type UnlistenFn = () => void;
 
-try {
-  if (typeof window !== 'undefined' && window.__TAURI__) {
-    tauriListen = require("@tauri-apps/api/event").listen;
-  }
-} catch (e) {
-  console.log('[ClaudeCodeSession] Tauri APIs not available, using web mode');
-}
-
 // Web-compatible replacements
-const listen = tauriListen || ((eventName: string, callback: (event: any) => void) => {
+const listen = wailsListen || ((eventName: string, callback: (event: any) => void) => {
   console.log('[ClaudeCodeSession] Setting up DOM event listener for:', eventName);
 
   // In web mode, listen for DOM events

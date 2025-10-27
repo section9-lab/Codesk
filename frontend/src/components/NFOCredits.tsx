@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Volume2, VolumeX, Github } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { wailsShell } from '@/lib/wailsAdapter';
 import asteriskLogo from "@/assets/nfo/asterisk-logo.png";
 import keygennMusic from "@/assets/nfo/opcode-nfo.ogg";
 
@@ -156,7 +156,7 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
                   size="sm"
                   onClick={async (e) => {
                     e.stopPropagation();
-                    await openUrl("https://github.com/getAsterisk/opcode/issues/new");
+                    await wailsShell.openExternal("https://github.com/getAsterisk/opcode/issues/new");
                   }}
                   className="flex items-center gap-1 h-auto px-2 py-1"
                   title="File a bug"
@@ -197,7 +197,7 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
                   className="inline-block mt-4 hover:scale-110 transition-transform cursor-pointer"
                   onClick={async (e) => {
                     e.stopPropagation();
-                    await openUrl("https://asterisk.so");
+                    await wailsShell.openExternal("https://asterisk.so");
                   }}
                 >
                   <img 

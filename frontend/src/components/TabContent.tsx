@@ -5,6 +5,7 @@ import { useScreenTracking } from '@/hooks/useAnalytics';
 import { Tab } from '@/contexts/TabContext';
 import { Loader2, Plus, ArrowLeft } from 'lucide-react';
 import { api, type Project, type Session, type ClaudeMdFile } from '@/lib/api';
+import { wailsDialog } from '@/lib/wailsAdapter';
 import { ProjectList } from '@/components/ProjectList';
 import { SessionList } from '@/components/SessionList';
 import { Button } from '@/components/ui/button';
@@ -85,8 +86,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ tab, isActive }) => {
     console.log('handleOpenProject called');
     try {
       // Use native dialog to pick folder
-      const { open } = await import('@tauri-apps/plugin-dialog');
-      const selected = await open({
+      const selected = await wailsDialog.open({
         directory: true,
         multiple: false,
         title: 'Select Project Folder',

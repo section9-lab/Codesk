@@ -183,7 +183,7 @@ export const Settings: React.FC<SettingsProps> = ({
       }
     } catch (err) {
       console.error("Failed to load settings:", err);
-      setError("Failed to load settings. Please ensure ~/.claude directory exists.");
+      setError("Failed to load settings. Please ensure ~/.claude directory exists."+err);
       setSettings({});
     } finally {
       setLoading(false);

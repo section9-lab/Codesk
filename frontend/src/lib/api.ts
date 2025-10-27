@@ -1,4 +1,4 @@
-import { apiCall } from './apiAdapter';
+import { wailsCall } from './wailsAdapter';
 import type { HooksConfiguration } from '@/types/hooks';
 
 /** Process type for tracking in ProcessRegistry */
@@ -454,7 +454,7 @@ export const api = {
    */
   async getHomeDirectory(): Promise<string> {
     try {
-      return await apiCall<string>("get_home_directory");
+      return await wailsCall<string>("get_home_directory");
     } catch (error) {
       console.error("Failed to get home directory:", error);
       return "/";
@@ -467,7 +467,7 @@ export const api = {
    */
   async listProjects(): Promise<Project[]> {
     try {
-      return await apiCall<Project[]>("list_projects");
+      return await wailsCall<Project[]>("list_projects");
     } catch (error) {
       console.error("Failed to list projects:", error);
       throw error;
@@ -481,7 +481,7 @@ export const api = {
    */
   async createProject(path: string): Promise<Project> {
     try {
-      return await apiCall<Project>('create_project', { path });
+      return await wailsCall<Project>('create_project', { path });
     } catch (error) {
       console.error("Failed to create project:", error);
       throw error;
@@ -495,7 +495,7 @@ export const api = {
    */
   async getProjectSessions(projectId: string): Promise<Session[]> {
     try {
-      return await apiCall<Session[]>('get_project_sessions', { projectId });
+      return await wailsCall<Session[]>('get_project_sessions', { projectId });
     } catch (error) {
       console.error("Failed to get project sessions:", error);
       throw error;
@@ -508,7 +508,7 @@ export const api = {
    */
   async fetchGitHubAgents(): Promise<GitHubAgentFile[]> {
     try {
-      return await apiCall<GitHubAgentFile[]>('fetch_github_agents');
+      return await wailsCall<GitHubAgentFile[]>('fetch_github_agents');
     } catch (error) {
       console.error("Failed to fetch GitHub agents:", error);
       throw error;
@@ -522,7 +522,7 @@ export const api = {
    */
   async fetchGitHubAgentContent(downloadUrl: string): Promise<AgentExport> {
     try {
-      return await apiCall<AgentExport>('fetch_github_agent_content', { downloadUrl });
+      return await wailsCall<AgentExport>('fetch_github_agent_content', { downloadUrl });
     } catch (error) {
       console.error("Failed to fetch GitHub agent content:", error);
       throw error;
@@ -536,7 +536,7 @@ export const api = {
    */
   async importAgentFromGitHub(downloadUrl: string): Promise<Agent> {
     try {
-      return await apiCall<Agent>('import_agent_from_github', { downloadUrl });
+      return await wailsCall<Agent>('import_agent_from_github', { downloadUrl });
     } catch (error) {
       console.error("Failed to import agent from GitHub:", error);
       throw error;
@@ -549,7 +549,7 @@ export const api = {
    */
   async getClaudeSettings(): Promise<ClaudeSettings> {
     try {
-      const result = await apiCall<{ data: ClaudeSettings }>("get_claude_settings");
+      const result = await wailsCall<{ data: ClaudeSettings }>("get_claude_settings");
       console.log("Raw result from get_claude_settings:", result);
       
       // The Rust backend returns ClaudeSettings { data: ... }
@@ -573,7 +573,7 @@ export const api = {
    */
   async openNewSession(path?: string): Promise<string> {
     try {
-      return await apiCall<string>("open_new_session", { path });
+      return await wailsCall<string>("open_new_session", { path });
     } catch (error) {
       console.error("Failed to open new session:", error);
       throw error;
@@ -586,7 +586,7 @@ export const api = {
    */
   async getSystemPrompt(): Promise<string> {
     try {
-      return await apiCall<string>("get_system_prompt");
+      return await wailsCall<string>("get_system_prompt");
     } catch (error) {
       console.error("Failed to get system prompt:", error);
       throw error;
@@ -599,7 +599,7 @@ export const api = {
    */
   async checkClaudeVersion(): Promise<ClaudeVersionStatus> {
     try {
-      return await apiCall<ClaudeVersionStatus>("check_claude_version");
+      return await wailsCall<ClaudeVersionStatus>("check_claude_version");
     } catch (error) {
       console.error("Failed to check Claude version:", error);
       throw error;
@@ -613,7 +613,7 @@ export const api = {
    */
   async saveSystemPrompt(content: string): Promise<string> {
     try {
-      return await apiCall<string>("save_system_prompt", { content });
+      return await wailsCall<string>("save_system_prompt", { content });
     } catch (error) {
       console.error("Failed to save system prompt:", error);
       throw error;
@@ -627,7 +627,7 @@ export const api = {
    */
   async saveClaudeSettings(settings: ClaudeSettings): Promise<string> {
     try {
-      return await apiCall<string>("save_claude_settings", { settings });
+      return await wailsCall<string>("save_claude_settings", { settings });
     } catch (error) {
       console.error("Failed to save Claude settings:", error);
       throw error;
@@ -641,7 +641,7 @@ export const api = {
    */
   async findClaudeMdFiles(projectPath: string): Promise<ClaudeMdFile[]> {
     try {
-      return await apiCall<ClaudeMdFile[]>("find_claude_md_files", { projectPath });
+      return await wailsCall<ClaudeMdFile[]>("find_claude_md_files", { projectPath });
     } catch (error) {
       console.error("Failed to find CLAUDE.md files:", error);
       throw error;
@@ -655,7 +655,7 @@ export const api = {
    */
   async readClaudeMdFile(filePath: string): Promise<string> {
     try {
-      return await apiCall<string>("read_claude_md_file", { filePath });
+      return await wailsCall<string>("read_claude_md_file", { filePath });
     } catch (error) {
       console.error("Failed to read CLAUDE.md file:", error);
       throw error;
@@ -670,7 +670,7 @@ export const api = {
    */
   async saveClaudeMdFile(filePath: string, content: string): Promise<string> {
     try {
-      return await apiCall<string>("save_claude_md_file", { filePath, content });
+      return await wailsCall<string>("save_claude_md_file", { filePath, content });
     } catch (error) {
       console.error("Failed to save CLAUDE.md file:", error);
       throw error;
@@ -685,7 +685,7 @@ export const api = {
    */
   async listAgents(): Promise<Agent[]> {
     try {
-      return await apiCall<Agent[]>('list_agents');
+      return await wailsCall<Agent[]>('list_agents');
     } catch (error) {
       console.error("Failed to list agents:", error);
       throw error;
@@ -711,7 +711,7 @@ export const api = {
     hooks?: string
   ): Promise<Agent> {
     try {
-      return await apiCall<Agent>('create_agent', { 
+      return await wailsCall<Agent>('create_agent', { 
         name, 
         icon, 
         systemPrompt: system_prompt,
@@ -746,7 +746,7 @@ export const api = {
     hooks?: string
   ): Promise<Agent> {
     try {
-      return await apiCall<Agent>('update_agent', { 
+      return await wailsCall<Agent>('update_agent', { 
         id, 
         name, 
         icon, 
@@ -768,7 +768,7 @@ export const api = {
    */
   async deleteAgent(id: number): Promise<void> {
     try {
-      return await apiCall('delete_agent', { id });
+      return await wailsCall('delete_agent', { id });
     } catch (error) {
       console.error("Failed to delete agent:", error);
       throw error;
@@ -782,7 +782,7 @@ export const api = {
    */
   async getAgent(id: number): Promise<Agent> {
     try {
-      return await apiCall<Agent>('get_agent', { id });
+      return await wailsCall<Agent>('get_agent', { id });
     } catch (error) {
       console.error("Failed to get agent:", error);
       throw error;
@@ -796,7 +796,7 @@ export const api = {
    */
   async exportAgent(id: number): Promise<string> {
     try {
-      return await apiCall<string>('export_agent', { id });
+      return await wailsCall<string>('export_agent', { id });
     } catch (error) {
       console.error("Failed to export agent:", error);
       throw error;
@@ -810,7 +810,7 @@ export const api = {
    */
   async importAgent(jsonData: string): Promise<Agent> {
     try {
-      return await apiCall<Agent>('import_agent', { jsonData });
+      return await wailsCall<Agent>('import_agent', { jsonData });
     } catch (error) {
       console.error("Failed to import agent:", error);
       throw error;
@@ -824,7 +824,7 @@ export const api = {
    */
   async importAgentFromFile(filePath: string): Promise<Agent> {
     try {
-      return await apiCall<Agent>('import_agent_from_file', { filePath });
+      return await wailsCall<Agent>('import_agent_from_file', { filePath });
     } catch (error) {
       console.error("Failed to import agent from file:", error);
       throw error;
@@ -841,7 +841,7 @@ export const api = {
    */
   async executeAgent(agentId: number, projectPath: string, task: string, model?: string): Promise<number> {
     try {
-      return await apiCall<number>('execute_agent', { agentId, projectPath, task, model });
+      return await wailsCall<number>('execute_agent', { agentId, projectPath, task, model });
     } catch (error) {
       console.error("Failed to execute agent:", error);
       // Return a sentinel value to indicate error
@@ -856,7 +856,7 @@ export const api = {
    */
   async listAgentRuns(agentId?: number): Promise<AgentRunWithMetrics[]> {
     try {
-      return await apiCall<AgentRunWithMetrics[]>('list_agent_runs', { agentId });
+      return await wailsCall<AgentRunWithMetrics[]>('list_agent_runs', { agentId });
     } catch (error) {
       console.error("Failed to list agent runs:", error);
       // Return empty array instead of throwing to prevent UI crashes
@@ -871,7 +871,13 @@ export const api = {
    */
   async listAgentRunsWithMetrics(agentId?: number): Promise<AgentRunWithMetrics[]> {
     try {
-      return await apiCall<AgentRunWithMetrics[]>('list_agent_runs_with_metrics', { agentId });
+      // TODO: 需要在 Go 后端添加 ListAgentRunsWithMetrics 方法
+      // 临时使用 listAgentRuns 并添加空的 metrics
+      const runs = await this.listAgentRuns(agentId);
+      return runs.map(run => ({
+        ...run,
+        metrics: {}
+      }));
     } catch (error) {
       console.error("Failed to list agent runs with metrics:", error);
       // Return empty array instead of throwing to prevent UI crashes
@@ -886,7 +892,7 @@ export const api = {
    */
   async getAgentRun(id: number): Promise<AgentRunWithMetrics> {
     try {
-      return await apiCall<AgentRunWithMetrics>('get_agent_run', { id });
+      return await wailsCall<AgentRunWithMetrics>('get_agent_run', { id });
     } catch (error) {
       console.error("Failed to get agent run:", error);
       throw new Error(`Failed to get agent run: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -900,7 +906,7 @@ export const api = {
    */
   async getAgentRunWithRealTimeMetrics(id: number): Promise<AgentRunWithMetrics> {
     try {
-      return await apiCall<AgentRunWithMetrics>('get_agent_run_with_real_time_metrics', { id });
+      return await wailsCall<AgentRunWithMetrics>('get_agent_run_with_real_time_metrics', { id });
     } catch (error) {
       console.error("Failed to get agent run with real-time metrics:", error);
       throw new Error(`Failed to get agent run with real-time metrics: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -913,7 +919,10 @@ export const api = {
    */
   async listRunningAgentSessions(): Promise<AgentRun[]> {
     try {
-      return await apiCall<AgentRun[]>('list_running_sessions');
+      // 使用 ListRunningClaudeSessions 方法，返回空数组作为临时解决方案
+      // TODO: 需要在 Go 后端添加专门的 ListRunningAgentSessions 方法
+      console.warn('listRunningAgentSessions not implemented, returning empty array');
+      return [];
     } catch (error) {
       console.error("Failed to list running agent sessions:", error);
       throw new Error(`Failed to list running agent sessions: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -927,7 +936,7 @@ export const api = {
    */
   async killAgentSession(runId: number): Promise<boolean> {
     try {
-      return await apiCall<boolean>('kill_agent_session', { runId });
+      return await wailsCall<boolean>('kill_agent_session', { runId });
     } catch (error) {
       console.error("Failed to kill agent session:", error);
       throw new Error(`Failed to kill agent session: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -941,7 +950,7 @@ export const api = {
    */
   async getSessionStatus(runId: number): Promise<string | null> {
     try {
-      return await apiCall<string | null>('get_session_status', { runId });
+      return await wailsCall<string | null>('get_session_status', { runId });
     } catch (error) {
       console.error("Failed to get session status:", error);
       throw new Error(`Failed to get session status: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -954,7 +963,7 @@ export const api = {
    */
   async cleanupFinishedProcesses(): Promise<number[]> {
     try {
-      return await apiCall<number[]>('cleanup_finished_processes');
+      return await wailsCall<number[]>('cleanup_finished_processes');
     } catch (error) {
       console.error("Failed to cleanup finished processes:", error);
       throw new Error(`Failed to cleanup finished processes: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -968,7 +977,7 @@ export const api = {
    */
   async getSessionOutput(runId: number): Promise<string> {
     try {
-      return await apiCall<string>('get_session_output', { runId });
+      return await wailsCall<string>('get_session_output', { runId });
     } catch (error) {
       console.error("Failed to get session output:", error);
       throw new Error(`Failed to get session output: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -982,7 +991,10 @@ export const api = {
    */
   async getLiveSessionOutput(runId: number): Promise<string> {
     try {
-      return await apiCall<string>('get_live_session_output', { runId });
+      // TODO: 需要在 Go 后端添加 GetLiveSessionOutput 方法
+      // 临时返回空字符串
+      console.warn('getLiveSessionOutput not implemented, returning empty string');
+      return '';
     } catch (error) {
       console.error("Failed to get live session output:", error);
       throw new Error(`Failed to get live session output: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -996,7 +1008,9 @@ export const api = {
    */
   async streamSessionOutput(runId: number): Promise<void> {
     try {
-      return await apiCall<void>('stream_session_output', { runId });
+      // TODO: 需要在 Go 后端添加 StreamSessionOutput 方法
+      console.warn('streamSessionOutput not implemented, doing nothing');
+      return;
     } catch (error) {
       console.error("Failed to start streaming session output:", error);
       throw new Error(`Failed to start streaming session output: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -1007,7 +1021,7 @@ export const api = {
    * Loads the JSONL history for a specific session
    */
   async loadSessionHistory(sessionId: string, projectId: string): Promise<any[]> {
-    return apiCall("load_session_history", { sessionId, projectId });
+    return wailsCall("load_session_history", { sessionId, projectId });
   },
 
   /**
@@ -1018,7 +1032,7 @@ export const api = {
    */
   async loadAgentSessionHistory(sessionId: string): Promise<any[]> {
     try {
-      return await apiCall<any[]>('load_agent_session_history', { sessionId });
+      return await wailsCall<any[]>('load_agent_session_history', { sessionId });
     } catch (error) {
       console.error("Failed to load agent session history:", error);
       throw error;
@@ -1029,21 +1043,21 @@ export const api = {
    * Executes a new interactive Claude Code session with streaming output
    */
   async executeClaudeCode(projectPath: string, prompt: string, model: string): Promise<void> {
-    return apiCall("execute_claude_code", { projectPath, prompt, model });
+    return wailsCall("execute_claude_code", { projectPath, prompt, model });
   },
 
   /**
    * Continues an existing Claude Code conversation with streaming output
    */
   async continueClaudeCode(projectPath: string, prompt: string, model: string): Promise<void> {
-    return apiCall("continue_claude_code", { projectPath, prompt, model });
+    return wailsCall("continue_claude_code", { projectPath, prompt, model });
   },
 
   /**
    * Resumes an existing Claude Code session by ID with streaming output
    */
   async resumeClaudeCode(projectPath: string, sessionId: string, prompt: string, model: string): Promise<void> {
-    return apiCall("resume_claude_code", { projectPath, sessionId, prompt, model });
+    return wailsCall("resume_claude_code", { projectPath, sessionId, prompt, model });
   },
 
   /**
@@ -1051,7 +1065,7 @@ export const api = {
    * @param sessionId - Optional session ID to cancel a specific session
    */
   async cancelClaudeExecution(sessionId?: string): Promise<void> {
-    return apiCall("cancel_claude_execution", { sessionId });
+    return wailsCall("cancel_claude_execution", { sessionId });
   },
 
   /**
@@ -1059,7 +1073,7 @@ export const api = {
    * @returns Promise resolving to list of running Claude sessions
    */
   async listRunningClaudeSessions(): Promise<any[]> {
-    return apiCall("list_running_claude_sessions");
+    return wailsCall("list_running_claude_sessions");
   },
 
   /**
@@ -1068,21 +1082,21 @@ export const api = {
    * @returns Promise resolving to the current live output
    */
   async getClaudeSessionOutput(sessionId: string): Promise<string> {
-    return apiCall("get_claude_session_output", { sessionId });
+    return wailsCall("get_claude_session_output", { sessionId });
   },
 
   /**
    * Lists files and directories in a given path
    */
   async listDirectoryContents(directoryPath: string): Promise<FileEntry[]> {
-    return apiCall("list_directory_contents", { directoryPath });
+    return wailsCall("list_directory_contents", { directoryPath });
   },
 
   /**
    * Searches for files and directories matching a pattern
    */
   async searchFiles(basePath: string, query: string): Promise<FileEntry[]> {
-    return apiCall("search_files", { basePath, query });
+    return wailsCall("search_files", { basePath, query });
   },
 
   /**
@@ -1091,7 +1105,7 @@ export const api = {
    */
   async getUsageStats(): Promise<UsageStats> {
     try {
-      return await apiCall<UsageStats>("get_usage_stats");
+      return await wailsCall<UsageStats>("get_usage_stats");
     } catch (error) {
       console.error("Failed to get usage stats:", error);
       throw error;
@@ -1106,7 +1120,7 @@ export const api = {
    */
   async getUsageByDateRange(startDate: string, endDate: string): Promise<UsageStats> {
     try {
-      return await apiCall<UsageStats>("get_usage_by_date_range", { startDate, endDate });
+      return await wailsCall<UsageStats>("get_usage_by_date_range", { startDate, endDate });
     } catch (error) {
       console.error("Failed to get usage by date range:", error);
       throw error;
@@ -1126,7 +1140,7 @@ export const api = {
     order?: "asc" | "desc"
   ): Promise<ProjectUsage[]> {
     try {
-      return await apiCall<ProjectUsage[]>("get_session_stats", {
+      return await wailsCall<ProjectUsage[]>("get_session_stats", {
         since,
         until,
         order,
@@ -1144,7 +1158,7 @@ export const api = {
    */
   async getUsageDetails(limit?: number): Promise<UsageEntry[]> {
     try {
-      return await apiCall<UsageEntry[]>("get_usage_details", { limit });
+      return await wailsCall<UsageEntry[]>("get_usage_details", { limit });
     } catch (error) {
       console.error("Failed to get usage details:", error);
       throw error;
@@ -1161,7 +1175,7 @@ export const api = {
     messageIndex?: number,
     description?: string
   ): Promise<CheckpointResult> {
-    return apiCall("create_checkpoint", {
+    return wailsCall("create_checkpoint", {
       sessionId,
       projectId,
       projectPath,
@@ -1179,7 +1193,7 @@ export const api = {
     projectId: string,
     projectPath: string
   ): Promise<CheckpointResult> {
-    return apiCall("restore_checkpoint", {
+    return wailsCall("restore_checkpoint", {
       checkpointId,
       sessionId,
       projectId,
@@ -1195,7 +1209,7 @@ export const api = {
     projectId: string,
     projectPath: string
   ): Promise<Checkpoint[]> {
-    return apiCall("list_checkpoints", {
+    return wailsCall("list_checkpoints", {
       sessionId,
       projectId,
       projectPath
@@ -1213,7 +1227,7 @@ export const api = {
     newSessionId: string,
     description?: string
   ): Promise<CheckpointResult> {
-    return apiCall("fork_from_checkpoint", {
+    return wailsCall("fork_from_checkpoint", {
       checkpointId,
       sessionId,
       projectId,
@@ -1231,7 +1245,7 @@ export const api = {
     projectId: string,
     projectPath: string
   ): Promise<SessionTimeline> {
-    return apiCall("get_session_timeline", {
+    return wailsCall("get_session_timeline", {
       sessionId,
       projectId,
       projectPath
@@ -1248,7 +1262,7 @@ export const api = {
     autoCheckpointEnabled: boolean,
     checkpointStrategy: CheckpointStrategy
   ): Promise<void> {
-    return apiCall("update_checkpoint_settings", {
+    return wailsCall("update_checkpoint_settings", {
       sessionId,
       projectId,
       projectPath,
@@ -1267,7 +1281,7 @@ export const api = {
     projectId: string
   ): Promise<CheckpointDiff> {
     try {
-      return await apiCall<CheckpointDiff>("get_checkpoint_diff", {
+      return await wailsCall<CheckpointDiff>("get_checkpoint_diff", {
         fromCheckpointId,
         toCheckpointId,
         sessionId,
@@ -1289,7 +1303,7 @@ export const api = {
     message: string
   ): Promise<void> {
     try {
-      await apiCall("track_checkpoint_message", {
+      await wailsCall("track_checkpoint_message", {
         sessionId,
         projectId,
         projectPath,
@@ -1311,7 +1325,7 @@ export const api = {
     message: string
   ): Promise<boolean> {
     try {
-      return await apiCall<boolean>("check_auto_checkpoint", {
+      return await wailsCall<boolean>("check_auto_checkpoint", {
         sessionId,
         projectId,
         projectPath,
@@ -1333,7 +1347,7 @@ export const api = {
     keepCount: number
   ): Promise<number> {
     try {
-      return await apiCall<number>("cleanup_old_checkpoints", {
+      return await wailsCall<number>("cleanup_old_checkpoints", {
         sessionId,
         projectId,
         projectPath,
@@ -1359,7 +1373,7 @@ export const api = {
     current_checkpoint_id?: string;
   }> {
     try {
-      return await apiCall("get_checkpoint_settings", {
+      return await wailsCall("get_checkpoint_settings", {
         sessionId,
         projectId,
         projectPath
@@ -1375,7 +1389,7 @@ export const api = {
    */
   async clearCheckpointManager(sessionId: string): Promise<void> {
     try {
-      await apiCall("clear_checkpoint_manager", { sessionId });
+      await wailsCall("clear_checkpoint_manager", { sessionId });
     } catch (error) {
       console.error("Failed to clear checkpoint manager:", error);
       throw error;
@@ -1391,7 +1405,7 @@ export const api = {
     projectPath: string, 
     messages: string[]
   ): Promise<void> =>
-    apiCall("track_session_messages", { sessionId, projectId, projectPath, messages }),
+    wailsCall("track_session_messages", { sessionId, projectId, projectPath, messages }),
 
   /**
    * Adds a new MCP server
@@ -1406,7 +1420,7 @@ export const api = {
     scope: string = "local"
   ): Promise<AddServerResult> {
     try {
-      return await apiCall<AddServerResult>("mcp_add", {
+      return await wailsCall<AddServerResult>("mcp_add", {
         name,
         transport,
         command,
@@ -1427,7 +1441,7 @@ export const api = {
   async mcpList(): Promise<MCPServer[]> {
     try {
       console.log("API: Calling mcp_list...");
-      const result = await apiCall<MCPServer[]>("mcp_list");
+      const result = await wailsCall<MCPServer[]>("mcp_list");
       console.log("API: mcp_list returned:", result);
       return result;
     } catch (error) {
@@ -1441,7 +1455,7 @@ export const api = {
    */
   async mcpGet(name: string): Promise<MCPServer> {
     try {
-      return await apiCall<MCPServer>("mcp_get", { name });
+      return await wailsCall<MCPServer>("mcp_get", { name });
     } catch (error) {
       console.error("Failed to get MCP server:", error);
       throw error;
@@ -1453,7 +1467,7 @@ export const api = {
    */
   async mcpRemove(name: string): Promise<string> {
     try {
-      return await apiCall<string>("mcp_remove", { name });
+      return await wailsCall<string>("mcp_remove", { name });
     } catch (error) {
       console.error("Failed to remove MCP server:", error);
       throw error;
@@ -1465,7 +1479,7 @@ export const api = {
    */
   async mcpAddJson(name: string, jsonConfig: string, scope: string = "local"): Promise<AddServerResult> {
     try {
-      return await apiCall<AddServerResult>("mcp_add_json", { name, jsonConfig, scope });
+      return await wailsCall<AddServerResult>("mcp_add_json", { name, jsonConfig, scope });
     } catch (error) {
       console.error("Failed to add MCP server from JSON:", error);
       throw error;
@@ -1477,7 +1491,7 @@ export const api = {
    */
   async mcpAddFromClaudeDesktop(scope: string = "local"): Promise<ImportResult> {
     try {
-      return await apiCall<ImportResult>("mcp_add_from_claude_desktop", { scope });
+      return await wailsCall<ImportResult>("mcp_add_from_claude_desktop", { scope });
     } catch (error) {
       console.error("Failed to import from Claude Desktop:", error);
       throw error;
@@ -1489,7 +1503,7 @@ export const api = {
    */
   async mcpServe(): Promise<string> {
     try {
-      return await apiCall<string>("mcp_serve");
+      return await wailsCall<string>("mcp_serve");
     } catch (error) {
       console.error("Failed to start MCP server:", error);
       throw error;
@@ -1501,7 +1515,7 @@ export const api = {
    */
   async mcpTestConnection(name: string): Promise<string> {
     try {
-      return await apiCall<string>("mcp_test_connection", { name });
+      return await wailsCall<string>("mcp_test_connection", { name });
     } catch (error) {
       console.error("Failed to test MCP connection:", error);
       throw error;
@@ -1513,7 +1527,7 @@ export const api = {
    */
   async mcpResetProjectChoices(): Promise<string> {
     try {
-      return await apiCall<string>("mcp_reset_project_choices");
+      return await wailsCall<string>("mcp_reset_project_choices");
     } catch (error) {
       console.error("Failed to reset project choices:", error);
       throw error;
@@ -1525,7 +1539,7 @@ export const api = {
    */
   async mcpGetServerStatus(): Promise<Record<string, ServerStatus>> {
     try {
-      return await apiCall<Record<string, ServerStatus>>("mcp_get_server_status");
+      return await wailsCall<Record<string, ServerStatus>>("mcp_get_server_status");
     } catch (error) {
       console.error("Failed to get server status:", error);
       throw error;
@@ -1537,7 +1551,7 @@ export const api = {
    */
   async mcpReadProjectConfig(projectPath: string): Promise<MCPProjectConfig> {
     try {
-      return await apiCall<MCPProjectConfig>("mcp_read_project_config", { projectPath });
+      return await wailsCall<MCPProjectConfig>("mcp_read_project_config", { projectPath });
     } catch (error) {
       console.error("Failed to read project MCP config:", error);
       throw error;
@@ -1549,7 +1563,7 @@ export const api = {
    */
   async mcpSaveProjectConfig(projectPath: string, config: MCPProjectConfig): Promise<string> {
     try {
-      return await apiCall<string>("mcp_save_project_config", { projectPath, config });
+      return await wailsCall<string>("mcp_save_project_config", { projectPath, config });
     } catch (error) {
       console.error("Failed to save project MCP config:", error);
       throw error;
@@ -1562,7 +1576,7 @@ export const api = {
    */
   async getClaudeBinaryPath(): Promise<string | null> {
     try {
-      return await apiCall<string | null>("get_claude_binary_path");
+      return await wailsCall<string | null>("get_claude_binary_path");
     } catch (error) {
       console.error("Failed to get Claude binary path:", error);
       throw error;
@@ -1576,7 +1590,7 @@ export const api = {
    */
   async setClaudeBinaryPath(path: string): Promise<void> {
     try {
-      return await apiCall<void>("set_claude_binary_path", { path });
+      return await wailsCall<void>("set_claude_binary_path", { path });
     } catch (error) {
       console.error("Failed to set Claude binary path:", error);
       throw error;
@@ -1589,7 +1603,7 @@ export const api = {
    */
   async listClaudeInstallations(): Promise<ClaudeInstallation[]> {
     try {
-      return await apiCall<ClaudeInstallation[]>("list_claude_installations");
+      return await wailsCall<ClaudeInstallation[]>("list_claude_installations");
     } catch (error) {
       console.error("Failed to list Claude installations:", error);
       throw error;
@@ -1604,7 +1618,7 @@ export const api = {
    */
   async storageListTables(): Promise<any[]> {
     try {
-      return await apiCall<any[]>("storage_list_tables");
+      return await wailsCall<any[]>("storage_list_tables");
     } catch (error) {
       console.error("Failed to list tables:", error);
       throw error;
@@ -1626,7 +1640,7 @@ export const api = {
     searchQuery?: string
   ): Promise<any> {
     try {
-      return await apiCall<any>("storage_read_table", {
+      return await wailsCall<any>("storage_read_table", {
         tableName,
         page,
         pageSize,
@@ -1651,7 +1665,7 @@ export const api = {
     updates: Record<string, any>
   ): Promise<void> {
     try {
-      return await apiCall<void>("storage_update_row", {
+      return await wailsCall<void>("storage_update_row", {
         tableName,
         primaryKeyValues,
         updates,
@@ -1673,7 +1687,7 @@ export const api = {
     primaryKeyValues: Record<string, any>
   ): Promise<void> {
     try {
-      return await apiCall<void>("storage_delete_row", {
+      return await wailsCall<void>("storage_delete_row", {
         tableName,
         primaryKeyValues,
       });
@@ -1694,7 +1708,7 @@ export const api = {
     values: Record<string, any>
   ): Promise<number> {
     try {
-      return await apiCall<number>("storage_insert_row", {
+      return await wailsCall<number>("storage_insert_row", {
         tableName,
         values,
       });
@@ -1711,7 +1725,7 @@ export const api = {
    */
   async storageExecuteSql(query: string): Promise<any> {
     try {
-      return await apiCall<any>("storage_execute_sql", { query });
+      return await wailsCall<any>("storage_execute_sql", { query });
     } catch (error) {
       console.error("Failed to execute SQL:", error);
       throw error;
@@ -1724,7 +1738,7 @@ export const api = {
    */
   async storageResetDatabase(): Promise<void> {
     try {
-      return await apiCall<void>("storage_reset_database");
+      return await wailsCall<void>("storage_reset_database");
     } catch (error) {
       console.error("Failed to reset database:", error);
       throw error;
@@ -1798,7 +1812,7 @@ export const api = {
    */
   async getHooksConfig(scope: 'user' | 'project' | 'local', projectPath?: string): Promise<HooksConfiguration> {
     try {
-      return await apiCall<HooksConfiguration>("get_hooks_config", { scope, projectPath });
+      return await wailsCall<HooksConfiguration>("get_hooks_config", { scope, projectPath });
     } catch (error) {
       console.error("Failed to get hooks config:", error);
       throw error;
@@ -1818,7 +1832,7 @@ export const api = {
     projectPath?: string
   ): Promise<string> {
     try {
-      return await apiCall<string>("update_hooks_config", { scope, projectPath, hooks });
+      return await wailsCall<string>("update_hooks_config", { scope, projectPath, hooks });
     } catch (error) {
       console.error("Failed to update hooks config:", error);
       throw error;
@@ -1832,7 +1846,7 @@ export const api = {
    */
   async validateHookCommand(command: string): Promise<{ valid: boolean; message: string }> {
     try {
-      return await apiCall<{ valid: boolean; message: string }>("validate_hook_command", { command });
+      return await wailsCall<{ valid: boolean; message: string }>("validate_hook_command", { command });
     } catch (error) {
       console.error("Failed to validate hook command:", error);
       throw error;
@@ -1870,7 +1884,7 @@ export const api = {
    */
   async slashCommandsList(projectPath?: string): Promise<SlashCommand[]> {
     try {
-      return await apiCall<SlashCommand[]>("slash_commands_list", { projectPath });
+      return await wailsCall<SlashCommand[]>("slash_commands_list", { projectPath });
     } catch (error) {
       console.error("Failed to list slash commands:", error);
       throw error;
@@ -1884,7 +1898,7 @@ export const api = {
    */
   async slashCommandGet(commandId: string): Promise<SlashCommand> {
     try {
-      return await apiCall<SlashCommand>("slash_command_get", { commandId });
+      return await wailsCall<SlashCommand>("slash_command_get", { commandId });
     } catch (error) {
       console.error("Failed to get slash command:", error);
       throw error;
@@ -1912,7 +1926,7 @@ export const api = {
     projectPath?: string
   ): Promise<SlashCommand> {
     try {
-      return await apiCall<SlashCommand>("slash_command_save", {
+      return await wailsCall<SlashCommand>("slash_command_save", {
         scope,
         name,
         namespace,
@@ -1935,7 +1949,7 @@ export const api = {
    */
   async slashCommandDelete(commandId: string, projectPath?: string): Promise<string> {
     try {
-      return await apiCall<string>("slash_command_delete", { commandId, projectPath });
+      return await wailsCall<string>("slash_command_delete", { commandId, projectPath });
     } catch (error) {
       console.error("Failed to delete slash command:", error);
       throw error;

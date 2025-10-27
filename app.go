@@ -13,6 +13,7 @@ import (
 	"Codesk/backend/service/slash"
 	"Codesk/backend/service/storage"
 	"Codesk/backend/service/usage"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -70,4 +71,116 @@ func (a *App) startup(ctx context.Context) {
 		a.proxyService.ApplyProxySettings(proxySettings)
 	}
 	fmt.Println("startup ok!")
+}
+
+// Window and dialog methods for Wails IPC
+
+// OpenFileDialog opens a file dialog for selecting files
+func (a *App) OpenFileDialog(options map[string]interface{}) ([]string, error) {
+	var dialogOptions []runtime.FileFilter
+	var defaultDirectory string
+	var multiple bool
+	var directory bool
+
+	// Parse options
+	if filters, ok := options["filters"].([]interface{}); ok {
+		for _, filter := range filters {
+			if filterMap, ok := filter.(map[string]interface{}); ok {
+				if displayName, ok := filterMap["displayName"].(string); ok {
+					if pattern, ok := filterMap["pattern"].(string); ok {
+						dialogOptions = append(dialogOptions, runtime.FileFilter{
+							DisplayName: displayName,
+							Pattern:     pattern,
+						})
+					}
+				}
+			}
+		}
+	}
+
+	if dir, ok := options["defaultDirectory"].(string); ok {
+		defaultDirectory = dir
+	}
+
+	if mult, ok := options["multiple"].(bool); ok {
+		multiple = mult
+	}
+
+	if dir, ok := options["directory"].(bool); ok {
+		directory = dir
+	}
+
+	if directory {
+		// Open directory dialog
+		selected, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+			Title:            "Select Directory",
+			DefaultDirectory: defaultDirectory,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return []string{selected}, nil
+	}
+
+	if multiple {
+		// Open multiple files dialog
+		return runtime.OpenMultipleFilesDialog(a.ctx, runtime.OpenDialogOptions{
+			Title:               "Select Files",
+			DefaultDirectory:    defaultDirectory,
+			Filters:             dialogOptions,
+			ShowHiddenFiles:     false,
+			CanCreateDirectories: true,
+		})
+	}
+
+	// Open single file dialog
+	selected, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:               "Select File",
+		DefaultDirectory:    defaultDirectory,
+		Filters:             dialogOptions,
+		ShowHiddenFiles:     false,
+		CanCreateDirectories: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return []string{selected}, nil
+}
+
+// SaveFileDialog opens a save file dialog
+func (a *App) SaveFileDialog(options map[string]interface{}) (string, error) {
+	var dialogOptions []runtime.FileFilter
+	var defaultFilename string
+
+	// Parse options
+	if filters, ok := options["filters"].([]interface{}); ok {
+		for _, filter := range filters {
+			if filterMap, ok := filter.(map[string]interface{}); ok {
+				if displayName, ok := filterMap["displayName"].(string); ok {
+					if pattern, ok := filterMap["pattern"].(string); ok {
+						dialogOptions = append(dialogOptions, runtime.FileFilter{
+							DisplayName: displayName,
+							Pattern:     pattern,
+						})
+					}
+				}
+			}
+		}
+	}
+
+	if filename, ok := options["defaultFilename"].(string); ok {
+		defaultFilename = filename
+	}
+
+	return runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		Title:           "Save File",
+		DefaultFilename: defaultFilename,
+		Filters:         dialogOptions,
+	})
+}
+
+// OpenExternal opens an external URL in the default browser
+func (a *App) OpenExternal(url string) error {
+	runtime.BrowserOpenURL(a.ctx, url)
+	return nil
 }

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings, Minus, Square, X, Bot, BarChart3, FileText, Network, Info, MoreVertical } from 'lucide-react';
-import { getCurrentWindow } from '@tauri-apps/api/window';
+import { wailsWindow } from '@/lib/wailsAdapter';
 import { TooltipProvider, TooltipSimple } from '@/components/ui/tooltip-modern';
 
 interface CustomTitlebarProps {
@@ -38,8 +38,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
 
   const handleMinimize = async () => {
     try {
-      const window = getCurrentWindow();
-      await window.minimize();
+      await wailsWindow.minimize();
       console.log('Window minimized successfully');
     } catch (error) {
       console.error('Failed to minimize window:', error);
@@ -48,15 +47,11 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
 
   const handleMaximize = async () => {
     try {
-      const window = getCurrentWindow();
-      const isMaximized = await window.isMaximized();
-      if (isMaximized) {
-        await window.unmaximize();
-        console.log('Window unmaximized successfully');
-      } else {
-        await window.maximize();
-        console.log('Window maximized successfully');
-      }
+      // Wails Window API doesn't have isMaximized, so we'll just toggle
+      // In Wails, we'll call maximize/unmaximize without checking current state
+      // This will toggle between maximized and normal state
+      await wailsWindow.maximize();
+      console.log('Window maximize toggle executed successfully');
     } catch (error) {
       console.error('Failed to maximize/unmaximize window:', error);
     }
@@ -64,8 +59,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
 
   const handleClose = async () => {
     try {
-      const window = getCurrentWindow();
-      await window.close();
+      await wailsWindow.close();
       console.log('Window closed successfully');
     } catch (error) {
       console.error('Failed to close window:', error);
@@ -75,8 +69,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
   return (
     <TooltipProvider>
     <div 
-      className="relative z-[200] h-11 bg-background/95 backdrop-blur-sm flex items-center justify-between select-none border-b border-border/50 tauri-drag"
-      data-tauri-drag-region
+      className="relative z-[200] h-11 bg-background/95 backdrop-blur-sm flex items-center justify-between select-none border-b border-border/50"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -89,7 +82,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
               e.stopPropagation();
               handleClose();
             }}
-            className="group relative w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-200 flex items-center justify-center tauri-no-drag"
+            className="group relative w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-200 flex items-center justify-center"
             title="Close"
           >
             {isHovered && (
@@ -103,7 +96,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
               e.stopPropagation();
               handleMinimize();
             }}
-            className="group relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-all duration-200 flex items-center justify-center tauri-no-drag"
+            className="group relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-all duration-200 flex items-center justify-center"
             title="Minimize"
           >
             {isHovered && (
@@ -117,7 +110,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
               e.stopPropagation();
               handleMaximize();
             }}
-            className="group relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center tauri-no-drag"
+            className="group relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center"
             title="Maximize"
           >
             {isHovered && (
@@ -130,13 +123,12 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
       {/* Center - Title (hidden) */}
       {/* <div 
         className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        data-tauri-drag-region
       >
         <span className="text-sm font-medium text-foreground/80">{title}</span>
       </div> */}
 
       {/* Right side - Navigation icons with improved spacing */}
-      <div className="flex items-center pr-5 gap-3 tauri-no-drag">
+      <div className="flex items-center pr-5 gap-3">
         {/* Primary actions group */}
         <div className="flex items-center gap-1">
           {onAgentsClick && (
@@ -145,7 +137,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onAgentsClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors tauri-no-drag"
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
               >
                 <Bot size={16} />
               </motion.button>
@@ -158,7 +150,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onUsageClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors tauri-no-drag"
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
               >
                 <BarChart3 size={16} />
               </motion.button>
@@ -177,7 +169,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onSettingsClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors tauri-no-drag"
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
               >
                 <Settings size={16} />
               </motion.button>

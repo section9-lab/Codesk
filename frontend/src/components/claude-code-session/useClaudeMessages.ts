@@ -1,17 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { getEnvironmentInfo } from '@/lib/apiAdapter';
+import { wailsListen } from '@/lib/wailsAdapter';
 import type { ClaudeStreamMessage } from '../AgentExecution';
-
-// Conditional import for Tauri
-let tauriListen: any;
-try {
-  if (typeof window !== 'undefined' && window.__TAURI__) {
-    tauriListen = require('@tauri-apps/api/event').listen;
-  }
-} catch (e) {
-  console.log('[useClaudeMessages] Tauri event API not available, using web mode');
-}
 
 interface UseClaudeMessagesOptions {
   onSessionInfo?: (info: { sessionId: string; projectId: string }) => void;
@@ -132,23 +122,22 @@ export function useClaudeMessages(options: UseClaudeMessagesOptions = {}) {
         eventListenerRef.current();
       }
       
-      const envInfo = getEnvironmentInfo();
-      console.log('[TRACE] Environment info:', envInfo);
+      console.log('[TRACE] Setting up Wails event listener for claude-output');
       
-      if (envInfo.isTauri && tauriListen) {
-        // Tauri mode - use Tauri's event system
-        console.log('[TRACE] Setting up Tauri event listener for claude-stream');
-        eventListenerRef.current = await tauriListen("claude-stream", (event: any) => {
-          console.log('[TRACE] Tauri event received:', event);
+      if (wailsListen) {
+        // Wails mode - use Wails event system
+        eventListenerRef.current = await wailsListen("claude-output", (payload: any) => {
+          console.log('[TRACE] Wails event received:', payload);
           try {
-            const message = JSON.parse(event.payload) as ClaudeStreamMessage;
-            console.log('[TRACE] Parsed Tauri message:', message);
+            // Wails passes data directly, not wrapped in event.payload
+            const message = typeof payload === 'string' ? JSON.parse(payload) : payload;
+            console.log('[TRACE] Parsed Wails message:', message);
             handleMessage(message);
           } catch (error) {
             console.error("[TRACE] Failed to parse Claude stream message:", error);
           }
         });
-        console.log('[TRACE] Tauri event listener setup complete');
+        console.log('[TRACE] Wails event listener setup complete');
       } else {
         // Web mode - use DOM events (these are dispatched by our WebSocket handler)
         console.log('[TRACE] Setting up web event listener for claude-output');

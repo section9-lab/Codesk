@@ -20,7 +20,7 @@ import { Toast, ToastContainer } from '@/components/ui/toast';
 import { Popover } from '@/components/ui/popover';
 import { api, type AgentRunWithMetrics } from '@/lib/api';
 import { useOutputCache } from '@/lib/outputCache';
-import { listen, type UnlistenFn } from '@tauri-apps/api/event';
+import { wailsListen, type UnlistenFn } from '@/lib/wailsAdapter';
 import { StreamMessage } from './StreamMessage';
 import { ErrorBoundary } from './ErrorBoundary';
 import { formatISOTimestamp } from '@/lib/date-utils';
@@ -279,7 +279,7 @@ export function AgentRunOutputViewer({
       }, 100);
 
       // Set up live event listeners with run ID isolation
-      const outputUnlisten = await listen<string>(`agent-output:${run!.id}`, (event) => {
+      const outputUnlisten = wailsListen(`agent-output:${run!.id}`, (payload: string) => {
         try {
           // Skip messages during initial load phase
           if (isInitialLoadRef.current) {
@@ -288,27 +288,27 @@ export function AgentRunOutputViewer({
           }
           
           // Store raw JSONL
-          setRawJsonlOutput(prev => [...prev, event.payload]);
+          setRawJsonlOutput(prev => [...prev, payload]);
           
           // Parse and display
-          const message = JSON.parse(event.payload) as ClaudeStreamMessage;
+          const message = JSON.parse(payload) as ClaudeStreamMessage;
           setMessages(prev => [...prev, message]);
         } catch (err) {
-          console.error("[AgentRunOutputViewer] Failed to parse message:", err, event.payload);
+          console.error("[AgentRunOutputViewer] Failed to parse message:", err, payload);
         }
       });
 
-      const errorUnlisten = await listen<string>(`agent-error:${run!.id}`, (event) => {
-        console.error("[AgentRunOutputViewer] Agent error:", event.payload);
-        setToast({ message: event.payload, type: 'error' });
+      const errorUnlisten = wailsListen(`agent-error:${run!.id}`, (payload: string) => {
+        console.error("[AgentRunOutputViewer] Agent error:", payload);
+        setToast({ message: payload, type: 'error' });
       });
 
-      const completeUnlisten = await listen<boolean>(`agent-complete:${run!.id}`, () => {
+      const completeUnlisten = wailsListen(`agent-complete:${run!.id}`, () => {
         setToast({ message: 'Agent execution completed', type: 'success' });
         // Don't set status here as the parent component should handle it
       });
 
-      const cancelUnlisten = await listen<boolean>(`agent-cancelled:${run!.id}`, () => {
+      const cancelUnlisten = wailsListen(`agent-cancelled:${run!.id}`, () => {
         setToast({ message: 'Agent execution was cancelled', type: 'error' });
       });
 

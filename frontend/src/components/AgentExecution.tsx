@@ -26,7 +26,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api, type Agent } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { wailsListen, type UnlistenFn } from '@/lib/wailsAdapter';
 import { StreamMessage } from "./StreamMessage";
 import { ExecutionControlBar } from "./ExecutionControlBar";
 import { ErrorBoundary } from "./ErrorBoundary";
@@ -319,22 +319,22 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       agentFeatureTracking.trackUsage();
       
       // Set up event listeners with run ID isolation
-      const outputUnlisten = await listen<string>(`agent-output:${executionRunId}`, (event) => {
+      const outputUnlisten = wailsListen(`agent-output:${executionRunId}`, (payload: string) => {
         try {
           // Store raw JSONL
-          setRawJsonlOutput(prev => [...prev, event.payload]);
+          setRawJsonlOutput(prev => [...prev, payload]);
           
           // Parse and display
-          const message = JSON.parse(event.payload) as ClaudeStreamMessage;
+          const message = JSON.parse(payload) as ClaudeStreamMessage;
           setMessages(prev => [...prev, message]);
         } catch (err) {
-          console.error("Failed to parse message:", err, event.payload);
+          console.error("Failed to parse message:", err, payload);
         }
       });
 
-      const errorUnlisten = await listen<string>(`agent-error:${executionRunId}`, (event) => {
-        console.error("Agent error:", event.payload);
-        setError(event.payload);
+      const errorUnlisten = wailsListen(`agent-error:${executionRunId}`, (payload: string) => {
+        console.error("Agent error:", payload);
+        setError(payload);
         
         // Track agent error
         trackEvent.agentError({
@@ -345,11 +345,11 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         });
       });
 
-      const completeUnlisten = await listen<boolean>(`agent-complete:${executionRunId}`, (event) => {
+      const completeUnlisten = wailsListen(`agent-complete:${executionRunId}`, (payload: boolean) => {
         setIsRunning(false);
         const duration = executionStartTime ? Date.now() - executionStartTime : undefined;
         setExecutionStartTime(null);
-        if (!event.payload) {
+        if (!payload) {
           setError("Agent execution failed");
           // Update tab status to error
           if (tabId) {
@@ -372,7 +372,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         }
       });
 
-      const cancelUnlisten = await listen<boolean>(`agent-cancelled:${executionRunId}`, () => {
+      const cancelUnlisten = wailsListen(`agent-cancelled:${executionRunId}`, () => {
         setIsRunning(false);
         setExecutionStartTime(null);
         setError("Agent execution was cancelled");

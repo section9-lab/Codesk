@@ -116,6 +116,10 @@ export function MCPSaveProjectConfig(arg1:model.MCPProjectConfig):Promise<void>;
 
 export function MCPTestConnection(arg1:string):Promise<boolean>;
 
+export function OpenExternal(arg1:string):Promise<void>;
+
+export function OpenFileDialog(arg1:Record<string, any>):Promise<Array<string>>;
+
 export function OpenNewSession():Promise<string>;
 
 export function ReadClaudeMdFile(arg1:string):Promise<string>;
@@ -127,6 +131,8 @@ export function ResumeClaude(arg1:string,arg2:string,arg3:string):Promise<claude
 export function SaveClaudeMdFile(arg1:string,arg2:string):Promise<void>;
 
 export function SaveClaudeSettings(arg1:model.ClaudeSettings):Promise<void>;
+
+export function SaveFileDialog(arg1:Record<string, any>):Promise<string>;
 
 export function SaveProxySettings(arg1:model.ProxySettings):Promise<void>;
 

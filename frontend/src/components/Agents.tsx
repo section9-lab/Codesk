@@ -13,8 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Toast } from '@/components/ui/toast';
 import { api, type Agent, type AgentRunWithMetrics } from '@/lib/api';
-import { open as openDialog, save } from '@tauri-apps/plugin-dialog';
-import { invoke } from '@tauri-apps/api/core';
+import { wailsDialog, wailsCall } from '@/lib/wailsAdapter';
 import { GitHubAgentBrowser } from '@/components/GitHubAgentBrowser';
 import { CreateAgent } from '@/components/CreateAgent';
 import { useTabState } from '@/hooks/useTabState';
@@ -75,12 +74,9 @@ export const Agents: React.FC = () => {
       return;
     }
     
-    // Import the dialog function
-    const { open } = await import('@tauri-apps/plugin-dialog');
-    
     try {
       // Prompt user to select a project directory
-      const projectPath = await open({
+      const projectPath = await wailsDialog.open({
         directory: true,
         multiple: false,
         title: `Select project directory for ${agent.name}`
@@ -121,7 +117,7 @@ export const Agents: React.FC = () => {
 
   const handleImportFromFile = async () => {
     try {
-      const selected = await openDialog({
+      const selected = await wailsDialog.open({
         filters: [
           { name: 'opcode Agent', extensions: ['opcode.json', 'json'] },
           { name: 'All Files', extensions: ['*'] }
@@ -142,7 +138,7 @@ export const Agents: React.FC = () => {
 
   const handleExportAgent = async (agent: Agent) => {
     try {
-      const path = await save({
+      const path = await wailsDialog.save({
         defaultPath: `${agent.name.toLowerCase().replace(/\s+/g, '-')}.opcode.json`,
         filters: [
           { name: 'opcode Agent', extensions: ['opcode.json'] }
@@ -150,7 +146,7 @@ export const Agents: React.FC = () => {
       });
 
       if (path && agent.id) {
-        await invoke('export_agent_to_file', { id: agent.id, filePath: path });
+        await wailsCall('export_agent_to_file', { id: agent.id, filePath: path });
         setToast({ message: `Exported agent: ${agent.name}`, type: 'success' });
       }
     } catch (error) {

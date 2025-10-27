@@ -3,7 +3,7 @@ import { X, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { wailsShell } from '@/lib/wailsAdapter';
 
 interface ImagePreviewProps {
   /**
@@ -62,8 +62,17 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
     if (imagePath.startsWith('data:')) {
       return imagePath;
     }
-    // Otherwise, convert the file path
-    return convertFileSrc(imagePath);
+    // Otherwise, use the file path directly (Wails handles file:// URLs natively)
+    // For Wails, we can use file:// URLs directly
+    if (imagePath.startsWith('file://')) {
+      return imagePath;
+    }
+    // For absolute paths, convert to file:// URL
+    if (imagePath.startsWith('/')) {
+      return `file://${imagePath}`;
+    }
+    // Return as-is for relative paths or other URLs
+    return imagePath;
   };
 
   if (displayImages.length === 0) return null;

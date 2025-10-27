@@ -31,8 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { api, type Agent, type AgentRunWithMetrics } from "@/lib/api";
-import { save, open } from "@tauri-apps/plugin-dialog";
-import { invoke } from "@tauri-apps/api/core";
+import { wailsDialog, wailsCall } from "@/lib/wailsAdapter";
 import { cn } from "@/lib/utils";
 import { Toast, ToastContainer } from "@/components/ui/toast";
 import { CreateAgent } from "./CreateAgent";
@@ -190,7 +189,7 @@ export const CCAgents: React.FC<CCAgentsProps> = ({ onBack, className }) => {
   const handleExportAgent = async (agent: Agent) => {
     try {
       // Show native save dialog
-      const filePath = await save({
+      const filePath = await wailsDialog.save({
         defaultPath: `${agent.name.toLowerCase().replace(/\s+/g, '-')}.opcode.json`,
         filters: [{
           name: 'opcode Agent',
@@ -204,7 +203,7 @@ export const CCAgents: React.FC<CCAgentsProps> = ({ onBack, className }) => {
       }
       
       // Export the agent to the selected file
-      await invoke('export_agent_to_file', { 
+      await wailsCall('export_agent_to_file', { 
         id: agent.id!,
         filePath 
       });
@@ -219,7 +218,7 @@ export const CCAgents: React.FC<CCAgentsProps> = ({ onBack, className }) => {
   const handleImportAgent = async () => {
     try {
       // Show native open dialog
-      const filePath = await open({
+      const filePath = await wailsDialog.open({
         multiple: false,
         filters: [{
           name: 'opcode Agent',

@@ -24,18 +24,8 @@ import { SlashCommandPicker } from "./SlashCommandPicker";
 import { ImagePreview } from "./ImagePreview";
 import { type FileEntry, type SlashCommand } from "@/lib/api";
 
-// Conditional import for Tauri webview window
-let tauriGetCurrentWebviewWindow: any;
-try {
-  if (typeof window !== 'undefined' && window.__TAURI__) {
-    tauriGetCurrentWebviewWindow = require("@tauri-apps/api/webviewWindow").getCurrentWebviewWindow;
-  }
-} catch (e) {
-  console.log('[FloatingPromptInput] Tauri webview API not available, using web mode');
-}
-
-// Web-compatible replacement
-const getCurrentWebviewWindow = tauriGetCurrentWebviewWindow || (() => ({ listen: () => Promise.resolve(() => {}) }));
+// Web-compatible replacement (Wails doesn't have webview window API)
+const getCurrentWebviewWindow = () => ({ listen: () => Promise.resolve(() => {}) });
 
 interface FloatingPromptInputProps {
   /**
@@ -358,7 +348,10 @@ const FloatingPromptInputInner = (
     }
   }, [prompt, projectPath, isExpanded]);
 
-  // Set up Tauri drag-drop event listener
+  // Set up Tauri drag-drop event listener (Tauri-specific functionality commented out for Wails)
+  // Wails doesn't have direct equivalent of Tauri's onDragDropEvent
+  // You may need to implement drag-drop using HTML5 drag and drop API for Wails
+  /*
   useEffect(() => {
     // This effect runs only once on component mount to set up the listener.
     let lastDropTime = 0;
@@ -435,6 +428,7 @@ const FloatingPromptInputInner = (
       }
     };
   }, []); // Empty dependency array ensures this runs only on mount/unmount.
+  */
 
   useEffect(() => {
     // Focus the appropriate textarea when expanded state changes

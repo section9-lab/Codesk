@@ -226,6 +226,14 @@ export function MCPTestConnection(arg1) {
   return window['go']['main']['App']['MCPTestConnection'](arg1);
 }
 
+export function OpenExternal(arg1) {
+  return window['go']['main']['App']['OpenExternal'](arg1);
+}
+
+export function OpenFileDialog(arg1) {
+  return window['go']['main']['App']['OpenFileDialog'](arg1);
+}
+
 export function OpenNewSession() {
   return window['go']['main']['App']['OpenNewSession']();
 }
@@ -248,6 +256,10 @@ export function SaveClaudeMdFile(arg1, arg2) {
 
 export function SaveClaudeSettings(arg1) {
   return window['go']['main']['App']['SaveClaudeSettings'](arg1);
+}
+
+export function SaveFileDialog(arg1) {
+  return window['go']['main']['App']['SaveFileDialog'](arg1);
 }
 
 export function SaveProxySettings(arg1) {

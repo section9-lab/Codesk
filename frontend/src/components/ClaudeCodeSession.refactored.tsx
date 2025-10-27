@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, type Session } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { open } from "@tauri-apps/plugin-dialog";
+import { wailsDialog } from '@/lib/wailsAdapter';
 import { FloatingPromptInput, type FloatingPromptInputRef } from "./FloatingPromptInput";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { TimelineNavigator } from "./TimelineNavigator";
@@ -92,7 +92,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
 
   // Handle path selection
   const handleSelectPath = async () => {
-    const selected = await open({
+    const selected = await wailsDialog.open({
       directory: true,
       multiple: false,
       title: "Select Project Directory"
