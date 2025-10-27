@@ -54,10 +54,24 @@ function detectWailsEnvironment(): boolean {
   }
 
   // 检查 Wails 特定的指示器
-  const isWails = !!(window.runtime || window.go);
-  
-  console.log('[detectWailsEnvironment] isWails:', isWails, 'userAgent:', navigator.userAgent);
-  
+  const hasRuntime = !!(window.runtime);
+  const hasGo = !!(window.go && window.go.main && window.go.main.App);
+
+  // 检查是否在 Electron 应用中（Wails 使用 Electron）
+  const isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1;
+
+  // 综合判断
+  const isWails = hasRuntime || hasGo || isElectron;
+
+  console.log('[detectWailsEnvironment] Detection results:', {
+    hasRuntime,
+    hasGo,
+    isElectron,
+    userAgent: navigator.userAgent,
+    url: window.location.href,
+    finalResult: isWails
+  });
+
   isWailsEnvironment = isWails;
   return isWails;
 }
@@ -67,8 +81,132 @@ function detectWailsEnvironment(): boolean {
  */
 
 
+// 导入所有 Wails 自动生成的 App 方法
+import * as AppMethods from '../../wailsjs/go/main/App';
+
 /**
- * 替换 Tauri 的 invoke 调用
+ * Wails 方法映射表
+ * 将 snake_case 命令映射到对应的生成方法
+ */
+const wailsMethodMap: Record<string, keyof typeof AppMethods | string> = {
+  // Claude 相关方法
+  'get_home_directory': 'GetHomeDirectory',
+  'list_projects': 'ListProjects',
+  'create_project': 'CreateProject',
+  'get_project_sessions': 'GetProjectSessions',
+  'get_claude_settings': 'GetClaudeSettings',
+  'save_claude_settings': 'SaveClaudeSettings',
+  'open_new_session': 'OpenNewSession',
+  'get_system_prompt': 'not_implemented', // 需要在 Go 后端添加
+  'save_system_prompt': 'not_implemented', // 需要在 Go 后端添加
+  'check_claude_version': 'CheckClaudeVersion',
+  'find_claude_md_files': 'FindClaudeMdFiles',
+  'read_claude_md_file': 'ReadClaudeMdFile',
+  'save_claude_md_file': 'SaveClaudeMdFile',
+  'execute_claude_code': 'ExecuteClaude',
+  'continue_claude_code': 'ContinueClaude',
+  'resume_claude_code': 'ResumeClaude',
+  'cancel_claude_execution': 'CancelClaude',
+  'list_running_claude_sessions': 'ListRunningClaudeSessions',
+  'get_claude_session_output': 'GetClaudeSessionOutput',
+  'get_claude_session_status': 'GetClaudeSessionStatus',
+  'list_directory_contents': 'ListDirectoryContents',
+  'search_files': 'SearchFiles',
+
+  // Agent 相关方法
+  'list_agents': 'ListAgents',
+  'create_agent': 'CreateAgent',
+  'update_agent': 'UpdateAgent',
+  'delete_agent': 'DeleteAgent',
+  'get_agent': 'GetAgent',
+  'export_agent': 'ExportAgent',
+  'export_agent_to_json': 'ExportAgentToJSON',
+  'import_agent': 'ImportAgent',
+  'import_agent_from_json': 'ImportAgentFromJSON',
+  'execute_agent': 'ExecuteAgent',
+  'list_agent_runs': 'ListAgentRuns',
+  'get_agent_run': 'GetAgentRun',
+  'get_agent_session_output': 'GetAgentSessionOutput',
+  'get_agent_session_status': 'GetAgentSessionStatus',
+  'kill_agent_session': 'KillAgentSession',
+  'cleanup_finished_processes': 'CleanupFinishedProcesses',
+  'load_session_history': 'LoadSessionHistory',
+
+  // Checkpoint 相关方法
+  'create_checkpoint': 'CreateCheckpoint',
+  'restore_checkpoint': 'RestoreCheckpoint',
+  'list_checkpoints': 'ListCheckpoints',
+  'fork_from_checkpoint': 'ForkFromCheckpoint',
+  'get_session_timeline': 'GetSessionTimeline',
+  'update_checkpoint_settings': 'UpdateCheckpointSettings',
+  'get_checkpoint_diff': 'GetCheckpointDiff',
+  'track_checkpoint_message': 'TrackCheckpointMessage',
+  'cleanup_old_checkpoints': 'CleanupOldCheckpoints',
+  'get_checkpoint_settings': 'GetCheckpointSettings',
+
+  // Usage 统计方法
+  'get_usage_stats': 'GetUsageStats',
+  'get_usage_by_date_range': 'GetUsageByDateRange',
+  'get_session_stats': 'GetSessionStats',
+  'get_usage_details': 'not_implemented', // 需要在 Go 后端添加
+
+  // MCP 相关方法
+  'mcp_add': 'MCPAddServer',
+  'mcp_list': 'MCPListServers',
+  'mcp_get': 'MCPGetServer',
+  'mcp_remove': 'MCPRemoveServer',
+  'mcp_add_json': 'MCPAddServerFromJSON',
+  'mcp_add_from_claude_desktop': 'not_implemented', // 需要在 Go 后端添加
+  'mcp_serve': 'not_implemented', // 需要在 Go 后端添加
+  'mcp_test_connection': 'MCPTestConnection',
+  'mcp_reset_project_choices': 'MCPResetProjectChoices',
+  'mcp_get_server_status': 'MCPGetServerStatus',
+  'mcp_read_project_config': 'MCPReadProjectConfig',
+  'mcp_save_project_config': 'MCPSaveProjectConfig',
+
+  // Storage 相关方法
+  'storage_list_tables': 'StorageListTables',
+  'storage_read_table': 'StorageReadTable',
+  'storage_update_row': 'StorageUpdateRow',
+  'storage_delete_row': 'StorageDeleteRow',
+  'storage_insert_row': 'StorageInsertRow',
+  'storage_execute_sql': 'StorageExecuteSQL',
+  'storage_reset_database': 'StorageResetDatabase',
+
+  // Slash Commands 相关方法
+  'slash_commands_list': 'ListSlashCommands',
+  'slash_command_get': 'GetSlashCommand',
+  'slash_command_save': 'SaveSlashCommand',
+  'slash_command_delete': 'DeleteSlashCommand',
+
+  // 其他方法
+  'get_claude_binary_path': 'not_implemented', // 需要在 Go 后端添加
+  'set_claude_binary_path': 'not_implemented', // 需要在 Go 后端添加
+  'list_claude_installations': 'ListClaudeInstallations',
+  'get_recently_modified_files': 'GetRecentlyModifiedFiles',
+  'get_proxy_settings': 'GetProxySettings',
+  'save_proxy_settings': 'SaveProxySettings',
+  'validate_hook_command': 'not_implemented', // 需要在 Go 后端添加
+  'get_hooks_config': 'not_implemented', // 需要在 Go 后端添加
+  'update_hooks_config': 'not_implemented', // 需要在 Go 后端添加
+  'track_session_messages': 'not_implemented', // 需要在 Go 后端添加
+  'track_file_modification': 'TrackFileModification',
+  'clear_checkpoint_manager': 'not_implemented', // 需要在 Go 后端添加
+  'check_auto_checkpoint': 'not_implemented', // 需要在 Go 后端添加
+  'fetch_github_agents': 'not_implemented', // 需要在 Go 后端添加
+  'fetch_github_agent_content': 'not_implemented', // 需要在 Go 后端添加
+  'import_agent_from_github': 'not_implemented', // 需要在 Go 后端添加
+  'get_agent_run_with_real_time_metrics': 'not_implemented', // 需要在 Go 后端添加
+  'list_agent_runs_with_metrics': 'not_implemented', // 需要在 Go 后端添加
+  'list_running_agent_sessions': 'not_implemented', // 需要在 Go 后端添加
+  'get_session_output': 'not_implemented', // 需要在 Go 后端添加
+  'get_live_session_output': 'not_implemented', // 需要在 Go 后端添加
+  'stream_session_output': 'not_implemented', // 需要在 Go 后端添加
+  'get_session_status': 'not_implemented', // 需要在 Go 后端添加
+};
+
+/**
+ * 替换 Tauri 的 invoke 调用 - 使用 Wails 自动生成的绑定
  */
 export async function wailsCall<T>(command: string, params?: any): Promise<T> {
   const isWails = detectWailsEnvironment();
@@ -78,35 +216,45 @@ export async function wailsCall<T>(command: string, params?: any): Promise<T> {
     throw new Error(`Wails environment not detected. Cannot call method: ${command}`);
   }
 
-  // Wails 环境 - 调用 Go 后端方法
   console.log(`[Wails] Calling: ${command}`, params);
-  
-  if (window.go && window.go.main && window.go.main.App) {
-    const app = window.go.main.App;
-    // 将 snake_case 转换为驼峰命名
-    const methodName = command
-      .split('_')
-      .map((word, index) => 
-        index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
-      )
-      .join('');
-    
-    console.log(`[Wails] Looking for method: ${methodName}`);
-    
-    if (typeof app[methodName] === 'function') {
-      try {
-        const result = await app[methodName](params);
-        console.log(`[Wails] Method ${methodName} executed successfully`);
-        return result;
-      } catch (error) {
-        console.error(`[Wails] Method ${methodName} failed:`, error);
-        throw error;
-      }
+
+  // 查找对应的方法名
+  const methodName = wailsMethodMap[command];
+  if (!methodName) {
+    throw new Error(`Method mapping not found for command: ${command}`);
+  }
+
+  // 检查方法是否已实现
+  if (methodName === 'not_implemented') {
+    throw new Error(`Method ${command} is not implemented in the Go backend yet`);
+  }
+
+  // 获取对应的方法
+  const method = (AppMethods as any)[methodName];
+  if (typeof method !== 'function') {
+    throw new Error(`Method ${methodName} not found in Wails App bindings`);
+  }
+
+  try {
+    // 根据参数数量调用方法
+    let result: T;
+    if (params && typeof params === 'object') {
+      // 如果是对象参数，按属性顺序传递
+      const paramValues = Object.values(params);
+      result = await method(...paramValues);
+    } else if (params !== undefined) {
+      // 单个参数
+      result = await method(params);
     } else {
-      throw new Error(`Method ${methodName} not found in Wails app`);
+      // 无参数
+      result = await method();
     }
-  } else {
-    throw new Error('Wails app not found - please ensure you are running in a Wails environment');
+
+    console.log(`[Wails] Method ${methodName} executed successfully`);
+    return result;
+  } catch (error) {
+    console.error(`[Wails] Method ${methodName} failed:`, error);
+    throw error;
   }
 }
 
