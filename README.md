@@ -29,14 +29,18 @@ wails build -clean -platform darwin/universal
 create-dmg \
   --volname "Codesk" \
   --window-pos 200 120 \
-  --window-size 400 400 \
+  --window-size 500 400 \
   --icon-size 100 \
-  --icon "Codesk.app" 200 190 \
-  --app-drop-link 600 185 \
+  --icon "Codesk.app" 100 150 \
+  --app-drop-link 300 155 \
   --hide-extension "Codesk.app" \
-  "/Codesk_v0.0.1.dmg" \
+  "$HOME/Downloads/Codesk_v0.0.1_${$(date +%Y%m%d_%H%M)}.dmg" \
   "build/bin/"
 ```
+
+- window-size 500 400       # 调整窗口大小
+- icon "Codesk.app" 100 190 # 左图标X位置
+- app-drop-link 300 185     # 右图标X位置
 
 ## 前后端联动机制
 
@@ -163,6 +167,14 @@ Backend Service 业务逻辑
 3. **自动绑定**：运行 `wails dev`，Wails 自动生成前端绑定
 4. **前端调用**：在 React 组件中导入并调用生成的方法
 
+
+  - 后端实现: ✅ backend/service/checkpoint/checkpoint_service.go - ClearCheckpointManager 方法
+  - Wails 命令: ✅ app_checkpoint.go - ClearCheckpointManager 方法
+  - 前端绑定: ✅ wailsjs/go/main/App.js 和 App.d.ts - 自动生成
+  - API 封装: ✅ api.ts - clearCheckpointManager 方法
+  - 方法映射: ✅ wailsAdapter.ts - 更新为 'ClearCheckpointManager'
+  - React 调用: ✅ ClaudeCodeSession.tsx - 组件卸载时自动清理
+  
 这种架构让你可以像调用本地函数一样调用后端方法，同时保持了前后端代码的清晰分离。
 
 Ref:

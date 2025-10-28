@@ -65,7 +65,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ tab, isActive }) => {
     try {
       setLoading(true);
       setError(null);
-      const sessionList = await api.getProjectSessions(project.id);
+      const sessionList = await api.getProjectSessions(project.path);
       setSessions(sessionList);
       setSelectedProject(project);
       

@@ -259,18 +259,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     overscan: 5,
   });
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[ClaudeCodeSession] State update:', {
-      projectPath,
-      session,
-      extractedSessionInfo,
-      effectiveSession,
-      messagesCount: messages.length,
-      isLoading
-    });
-  }, [projectPath, session, extractedSessionInfo, effectiveSession, messages.length, isLoading]);
-
+  
   // Load session history if resuming
   useEffect(() => {
     if (session) {
@@ -339,25 +328,44 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
       setError(null);
       
       const history = await api.loadSessionHistory(session.id, session.project_id);
-      
+
+      // Extract messages array from SessionHistory object
+      const messagesArray = history.messages || [];
+
       // Save session data for restoration
-      if (history && history.length > 0) {
+      if (messagesArray && messagesArray.length > 0) {
         SessionPersistenceService.saveSession(
           session.id,
           session.project_id,
           session.project_path,
-          history.length
+          messagesArray.length
         );
       }
-      
+
       // Convert history to messages format
-      const loadedMessages: ClaudeStreamMessage[] = history.map(entry => ({
-        ...entry,
-        type: entry.type || "assistant"
-      }));
-      
+      const loadedMessages: ClaudeStreamMessage[] = messagesArray.map((entry: any) => {
+        // Handle message content structure
+        let message = entry.message;
+        if (message && typeof message.content === 'string') {
+          // Convert string content to array format for consistency
+          message = {
+            ...message,
+            content: message.content ? [{
+              type: 'text',
+              text: message.content
+            }] : []
+          };
+        }
+
+        return {
+          ...entry,
+          type: entry.type || "assistant",
+          message: message
+        };
+      });
+
       setMessages(loadedMessages);
-      setRawJsonlOutput(history.map(h => JSON.stringify(h)));
+      setRawJsonlOutput(messagesArray.map((h: any) => JSON.stringify(h)));
       
       // After loading history, we're continuing a conversation
       setIsFirstPrompt(false);
@@ -391,7 +399,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
     if (session) {
       try {
         const activeSessions = await api.listRunningClaudeSessions();
-        const activeSession = activeSessions.find((s: any) => {
+        const activeSession = activeSessions?.find((s: any) => {
           if ('process_type' in s && s.process_type && 'ClaudeSession' in s.process_type) {
             return (s.process_type as any).ClaudeSession.session_id === session.id;
           }

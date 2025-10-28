@@ -3,6 +3,7 @@ package checkpoint
 import (
 	"Codesk/backend/config"
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -231,6 +232,24 @@ func (s *CheckpointService) UpdateCheckpointSettings(projectID, sessionID, proje
 	timeline := manager.GetTimeline()
 	timeline.AutoCheckpointEnabled = settings.AutoCheckpointEnabled
 	timeline.CheckpointStrategy = CheckpointStrategy(settings.CheckpointStrategy)
+
+	return nil
+}
+
+// ClearCheckpointManager 清理指定会话的检查点管理器，释放相关资源
+// 对应 Rust 版本的 clear_checkpoint_manager 函数
+func (s *CheckpointService) ClearCheckpointManager(sessionID string) error {
+	log.Printf("Clearing checkpoint manager for session: %s", sessionID)
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, exists := s.managers[sessionID]; exists {
+		delete(s.managers, sessionID)
+		log.Printf("Successfully cleared checkpoint manager for session: %s", sessionID)
+	} else {
+		log.Printf("No checkpoint manager found for session: %s", sessionID)
+	}
 
 	return nil
 }

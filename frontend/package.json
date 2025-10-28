@@ -29,7 +29,6 @@
     "@tauri-apps/plugin-global-shortcut": "^2.0.0",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-shell": "^2.0.1",
-    
     "@types/diff": "^8.0.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@uiw/react-md-editor": "^4.0.7",
@@ -41,7 +40,7 @@
     "framer-motion": "^12.0.0-alpha.1",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.468.0",
-    "posthog-js": "^1.258.3",
+    "posthog-js": "^1.281.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",

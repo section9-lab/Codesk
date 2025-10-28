@@ -58,3 +58,9 @@ func (a *App) UpdateCheckpointSettings(projectID, sessionID, projectPath string,
 func (a *App) CleanupOldCheckpoints(retentionDays int) (int, error) {
 	return a.checkpointService.CleanupOldCheckpoints(retentionDays)
 }
+
+// ClearCheckpointManager 清理指定会话的检查点管理器
+// 对应 Rust 版本的 clear_checkpoint_manager Tauri 命令
+func (a *App) ClearCheckpointManager(sessionID string) error {
+	return a.checkpointService.ClearCheckpointManager(sessionID)
+}

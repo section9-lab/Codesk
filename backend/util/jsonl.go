@@ -22,6 +22,10 @@ func ReadJSONL(path string) ([]JSONLEntry, error) {
 	var entries []JSONLEntry
 	scanner := bufio.NewScanner(file)
 
+	// Increase the maximum token size to handle very long lines (up to 10MB)
+	buf := make([]byte, 0, 10*1024*1024) // 10MB buffer
+	scanner.Buffer(buf, 10*1024*1024)
+
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if line == "" {
@@ -155,6 +159,11 @@ func StreamJSONL(path string, callback func(JSONLEntry) error) error {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+
+	// Increase the maximum token size to handle very long lines (up to 10MB)
+	buf := make([]byte, 0, 10*1024*1024) // 10MB buffer
+	scanner.Buffer(buf, 10*1024*1024)
+
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if line == "" {

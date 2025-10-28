@@ -191,7 +191,7 @@ const wailsMethodMap: Record<string, keyof typeof AppMethods | string> = {
   'update_hooks_config': 'not_implemented', // 需要在 Go 后端添加
   'track_session_messages': 'not_implemented', // 需要在 Go 后端添加
   'track_file_modification': 'TrackFileModification',
-  'clear_checkpoint_manager': 'not_implemented', // 需要在 Go 后端添加
+  'clear_checkpoint_manager': 'ClearCheckpointManager', // ✅ 已实现
   'check_auto_checkpoint': 'not_implemented', // 需要在 Go 后端添加
   'fetch_github_agents': 'not_implemented', // 需要在 Go 后端添加
   'fetch_github_agent_content': 'not_implemented', // 需要在 Go 后端添加

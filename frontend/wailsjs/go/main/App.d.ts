@@ -12,6 +12,8 @@ export function CleanupFinishedProcesses():Promise<number>;
 
 export function CleanupOldCheckpoints(arg1:number):Promise<number>;
 
+export function ClearCheckpointManager(arg1:string):Promise<void>;
+
 export function ContinueClaude(arg1:string,arg2:string,arg3:string):Promise<claude.ExecuteResult>;
 
 export function CreateAgent(arg1:model.Agent):Promise<void>;

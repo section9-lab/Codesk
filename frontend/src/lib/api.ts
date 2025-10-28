@@ -490,12 +490,12 @@ export const api = {
 
   /**
    * Retrieves sessions for a specific project
-   * @param projectId - The ID of the project to retrieve sessions for
+   * @param projectPath - The path of the project to retrieve sessions for
    * @returns Promise resolving to an array of sessions
    */
-  async getProjectSessions(projectId: string): Promise<Session[]> {
+  async getProjectSessions(projectPath: string): Promise<Session[]> {
     try {
-      return await wailsCall<Session[]>('get_project_sessions', { projectId });
+      return await wailsCall<Session[]>('get_project_sessions', projectPath);
     } catch (error) {
       console.error("Failed to get project sessions:", error);
       throw error;
@@ -1020,7 +1020,7 @@ export const api = {
   /**
    * Loads the JSONL history for a specific session
    */
-  async loadSessionHistory(sessionId: string, projectId: string): Promise<any[]> {
+  async loadSessionHistory(sessionId: string, projectId: string): Promise<{session_id: string, messages: any[]}> {
     return wailsCall("load_session_history", { sessionId, projectId });
   },
 

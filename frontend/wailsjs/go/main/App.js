@@ -18,6 +18,10 @@ export function CleanupOldCheckpoints(arg1) {
   return window['go']['main']['App']['CleanupOldCheckpoints'](arg1);
 }
 
+export function ClearCheckpointManager(arg1) {
+  return window['go']['main']['App']['ClearCheckpointManager'](arg1);
+}
+
 export function ContinueClaude(arg1, arg2, arg3) {
   return window['go']['main']['App']['ContinueClaude'](arg1, arg2, arg3);
 }
