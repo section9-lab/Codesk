@@ -1,0 +1,41 @@
+<svg id="w-svg" width="1024" height="1024" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <!-- 柔和阴影滤镜 -->
+    <filter id="iconShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.5"/>
+      <feOffset dx="1" dy="1" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- 外发光效果 -->
+    <filter id="outerGlow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="0 0 0 0 0 
+                0 0 0 0 0 
+                0 0 0 0 0 
+                0 0 0 0.3 0"/>
+    </filter>
+  </defs>
+  
+  <!-- 外发光层 -->
+  <rect x="10" y="10" width="80" height="80" rx="20" ry="20" fill="#000000"  filter="url(#outerGlow)" />
+  
+  <!-- 主体背景带阴影 -->
+  <rect x="10" y="10" width="76" height="76" rx="20" ry="20" fill="#000000" filter="url(#iconShadow)"/>
+  
+  <circle cx="33" cy="38" r="8" fill="white"  fill="#ffffff"  stroke="#c1c1c1" stroke-width="0.25"/>
+  
+  <!-- <circle cx="60" cy="38" r="10" fill="white"  fill="#ffffff"  stroke="#c1c1c1" stroke-width="0.25"/> -->
+  
+  <rect opacity="1" x="92" y="30" width="16" height="16" rx="4" transform="rotate(-50 81 80)" fill="#FDBA74" stroke="#DDAA64" stroke-width="0.25"/>
+  
+      <!-- <rect x="60" y="25" width="5" height="35" rx="2" ry="2" fill="#ffffff"  stroke="#c1c1c1" stroke-width="0.25"/> -->
+  <rect x="36" y="62" width="15" height="5" rx="2" ry="2" fill="#ffffff"  stroke="#c1c1c1" stroke-width="0.25"/>
+</svg>
