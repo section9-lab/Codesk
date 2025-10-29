@@ -1,6 +1,7 @@
 package claude
 
 import (
+	"bufio"
 	"Codesk/backend/config"
 	"Codesk/backend/model"
 	"Codesk/backend/util"
@@ -302,37 +303,40 @@ func (s *ProjectService) LoadSessionHistory(sessionID, projectPath string) (*mod
 		return nil, fmt.Errorf("session file not found")
 	}
 
-	entries, err := util.ReadJSONL(sessionPath)
+	// 读取原始 JSONL 行
+	file, err := os.Open(sessionPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read session: %w", err)
+		return nil, fmt.Errorf("failed to open session file: %w", err)
+	}
+	defer file.Close()
+
+	var messages []map[string]interface{}
+	scanner := bufio.NewScanner(file)
+
+	// Increase the maximum token size to handle very long lines (up to 10MB)
+	buf := make([]byte, 0, 10*1024*1024) // 10MB buffer
+	scanner.Buffer(buf, 10*1024*1024)
+
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+
+		var entry map[string]interface{}
+		if err := json.Unmarshal([]byte(line), &entry); err != nil {
+			// 跳过无效行，但记录日志
+			continue
+		}
+
+		messages = append(messages, entry)
 	}
 
-	var messages []model.SessionMessage
-	for _, entry := range entries {
-		var msg model.SessionMessage
-
-		if msgType, ok := entry["type"].(string); ok {
-			msg.Type = msgType
-		}
-
-		if timestamp, ok := entry["timestamp"].(string); ok {
-			msg.Timestamp = &timestamp
-		}
-
-		if message, ok := entry["message"].(map[string]interface{}); ok {
-			msgContent := &model.MessageContent{}
-			if role, ok := message["role"].(string); ok {
-				msgContent.Role = role
-			}
-			if content, ok := message["content"].(string); ok {
-				msgContent.Content = content
-			}
-			msg.Message = msgContent
-		}
-
-		messages = append(messages, msg)
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("failed to read session file: %w", err)
 	}
 
+	// 直接返回原始消息，保持完整的 JSON 数据结构
 	return &model.SessionHistory{
 		SessionID: sessionID,
 		Messages:  messages,

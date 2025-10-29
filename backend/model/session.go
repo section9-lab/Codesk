@@ -49,8 +49,8 @@ type MessageContent struct {
 
 // SessionHistory 会话历史记录
 type SessionHistory struct {
-	SessionID string           `json:"session_id"`
-	Messages  []SessionMessage `json:"messages"`
+	SessionID string                    `json:"session_id"`
+	Messages  []map[string]interface{} `json:"messages"`
 }
 
 // RunningSession 正在运行的会话信息
@@ -59,4 +59,12 @@ type RunningSession struct {
 	ProjectPath string    `json:"project_path"`
 	PID         uint32    `json:"pid"`
 	StartedAt   time.Time `json:"started_at"`
+}
+
+// ClaudeInstallation Claude 安装信息
+type ClaudeInstallation struct {
+	Path             string `json:"path"`
+	Version          string `json:"version,omitempty"`
+	Source           string `json:"source"`
+	InstallationType string `json:"installation_type"`
 }

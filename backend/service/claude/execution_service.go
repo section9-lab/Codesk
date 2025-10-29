@@ -2,6 +2,7 @@ package claude
 
 import (
 	"Codesk/backend/config"
+	"Codesk/backend/model"
 	"Codesk/backend/process"
 	"Codesk/backend/util"
 	"context"
@@ -218,7 +219,7 @@ func (s *ExecutionService) CheckClaudeVersion() (bool, string, error) {
 }
 
 // ListClaudeInstallations 列出所有 Claude 安装位置
-func (s *ExecutionService) ListClaudeInstallations() []string {
+func (s *ExecutionService) ListClaudeInstallations() []model.ClaudeInstallation {
 	return util.ListClaudeInstallations()
 }
 

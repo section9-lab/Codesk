@@ -1,6 +1,7 @@
 package util
 
 import (
+	"Codesk/backend/model"
 	"fmt"
 	"os"
 	"os/exec"
@@ -88,12 +89,16 @@ func CheckClaudeInstallation() (bool, string, error) {
 }
 
 // ListClaudeInstallations 列出所有可能的 Claude 安装位置
-func ListClaudeInstallations() []string {
-	var installations []string
+func ListClaudeInstallations() []model.ClaudeInstallation {
+	var installations []model.ClaudeInstallation
 
 	// 从 PATH 查找
 	if path, err := exec.LookPath("claude"); err == nil {
-		installations = append(installations, path)
+		installations = append(installations, model.ClaudeInstallation{
+			Path:             path,
+			Source:           "PATH",
+			InstallationType: "System",
+		})
 	}
 
 	// 搜索常见位置
@@ -125,13 +130,45 @@ func ListClaudeInstallations() []string {
 			// 避免重复
 			found := false
 			for _, existing := range installations {
-				if existing == path {
+				if existing.Path == path {
 					found = true
 					break
 				}
 			}
 			if !found {
-				installations = append(installations, path)
+				// 尝试获取版本信息
+				version := ""
+				if ver, err := GetClaudeVersion(path); err == nil {
+					version = ver
+				}
+
+				// 确定安装类型
+				installType := "Custom"
+				source := "unknown"
+
+				if strings.Contains(path, "homebrew") {
+					installType = "System"
+					source = "homebrew"
+				} else if strings.Contains(path, "/usr/local/bin") || strings.Contains(path, "/usr/bin") {
+					installType = "System"
+					source = "system"
+				} else if strings.Contains(path, ".local/bin") {
+					installType = "Custom"
+					source = "local"
+				} else if strings.Contains(path, "Program Files") {
+					installType = "System"
+					source = "installer"
+				} else if strings.Contains(path, "AppData") {
+					installType = "Custom"
+					source = "user"
+				}
+
+				installations = append(installations, model.ClaudeInstallation{
+					Path:             path,
+					Version:          version,
+					Source:           source,
+					InstallationType: installType,
+				})
 			}
 		}
 	}

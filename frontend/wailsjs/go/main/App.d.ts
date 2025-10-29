@@ -86,7 +86,7 @@ export function ListAgents():Promise<Array<model.Agent>>;
 
 export function ListCheckpoints(arg1:string,arg2:string,arg3:string):Promise<Array<checkpoint.Checkpoint>>;
 
-export function ListClaudeInstallations():Promise<Array<string>>;
+export function ListClaudeInstallations():Promise<Array<model.ClaudeInstallation>>;
 
 export function ListDirectoryContents(arg1:string):Promise<Array<claude.FileEntry>>;
 
@@ -132,7 +132,7 @@ export function ResumeClaude(arg1:string,arg2:string,arg3:string):Promise<claude
 
 export function SaveClaudeMdFile(arg1:string,arg2:string):Promise<void>;
 
-export function SaveClaudeSettings(arg1:model.ClaudeSettings):Promise<void>;
+export function SaveClaudeSettings(arg1:Record<string, any>):Promise<void>;
 
 export function SaveFileDialog(arg1:Record<string, any>):Promise<string>;
 

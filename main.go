@@ -20,6 +20,7 @@ func main() {
 		Title:  "Codesk",
 		Width:  1024,
 		Height: 768,
+		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

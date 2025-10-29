@@ -9,5 +9,16 @@
   "author": {
     "name": "Tachikoma",
     "email": "section9lab@gmail.com"
+  },
+  "info": {
+    "productName": "Codesk",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright © 2025 Tachikoma",
+    "comments": "A Claude Code desktop application"
+  },
+  "icon": {
+    "darwin": "frontend/icons/icon.png",
+    "linux": "frontend/icons/icon.png",
+    "windows": "frontend/icons/icon.png"
   }
 }

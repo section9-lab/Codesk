@@ -97,8 +97,8 @@ export default StartupIntro;
 function BrandText() {
   return (
     <div className="text-5xl font-extrabold tracking-tight brand-text">
-      <span className="brand-text-solid">codesk</span>
-      <span aria-hidden="true" className="brand-text-shimmer">codesk</span>
+      <span className="brand-text-solid">Codesk</span>
+      <span aria-hidden="true" className="brand-text-shimmer">Codesk</span>
     </div>
   );
 }

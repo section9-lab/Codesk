@@ -82,7 +82,7 @@ export const Settings: React.FC<SettingsProps> = ({
   const getUserHooks = React.useRef<(() => any) | null>(null);
   
   // Theme hook
-  const { theme, setTheme, customColors, setCustomColors } = useTheme();
+  const { theme, setTheme } = useTheme();
   
   // Proxy state
   const [proxySettingsChanged, setProxySettingsChanged] = useState(false);
@@ -141,29 +141,32 @@ export const Settings: React.FC<SettingsProps> = ({
       setLoading(true);
       setError(null);
       const loadedSettings = await api.getClaudeSettings();
-      
-      // Ensure loadedSettings is an object
-      if (!loadedSettings || typeof loadedSettings !== 'object') {
-        console.warn("Loaded settings is not an object:", loadedSettings);
+
+      // Backend returns {Data: {...}} but we want the inner data
+      const settingsData = loadedSettings?.data || loadedSettings;
+
+      // Ensure settingsData is an object
+      if (!settingsData || typeof settingsData !== 'object') {
+        console.warn("Loaded settings is not an object:", settingsData);
         setSettings({});
         return;
       }
-      
-      setSettings(loadedSettings);
+
+      setSettings(settingsData);
 
       // Parse permissions
-      if (loadedSettings.permissions && typeof loadedSettings.permissions === 'object') {
-        if (Array.isArray(loadedSettings.permissions.allow)) {
+      if (settingsData.permissions && typeof settingsData.permissions === 'object') {
+        if (Array.isArray(settingsData.permissions.allow)) {
           setAllowRules(
-            loadedSettings.permissions.allow.map((rule: string, index: number) => ({
+            settingsData.permissions.allow.map((rule: string, index: number) => ({
               id: `allow-${index}`,
               value: rule,
             }))
           );
         }
-        if (Array.isArray(loadedSettings.permissions.deny)) {
+        if (Array.isArray(settingsData.permissions.deny)) {
           setDenyRules(
-            loadedSettings.permissions.deny.map((rule: string, index: number) => ({
+            settingsData.permissions.deny.map((rule: string, index: number) => ({
               id: `deny-${index}`,
               value: rule,
             }))
@@ -172,9 +175,9 @@ export const Settings: React.FC<SettingsProps> = ({
       }
 
       // Parse environment variables
-      if (loadedSettings.env && typeof loadedSettings.env === 'object' && !Array.isArray(loadedSettings.env)) {
+      if (settingsData.env && typeof settingsData.env === 'object' && !Array.isArray(settingsData.env)) {
         setEnvVars(
-          Object.entries(loadedSettings.env).map(([key, value], index) => ({
+          Object.entries(settingsData.env).map(([key, value], index) => ({
             id: `env-${index}`,
             key,
             value: value as string,
@@ -433,18 +436,6 @@ export const Settings: React.FC<SettingsProps> = ({
                           Dark
                         </button>
                         <button
-                          onClick={() => setTheme('gray')}
-                          className={cn(
-                            "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                            theme === 'gray' 
-                              ? "bg-background shadow-sm" 
-                              : "hover:bg-background/50"
-                          )}
-                        >
-                          {theme === 'gray' && <Check className="h-3 w-3" />}
-                          Gray
-                        </button>
-                        <button
                           onClick={() => setTheme('light')}
                           className={cn(
                             "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all",
@@ -456,148 +447,10 @@ export const Settings: React.FC<SettingsProps> = ({
                           {theme === 'light' && <Check className="h-3 w-3" />}
                           Light
                         </button>
-                        <button
-                          onClick={() => setTheme('custom')}
-                          className={cn(
-                            "flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                            theme === 'custom' 
-                              ? "bg-background shadow-sm" 
-                              : "hover:bg-background/50"
-                          )}
-                        >
-                          {theme === 'custom' && <Check className="h-3 w-3" />}
-                          Custom
-                        </button>
-                      </div>
+                                              </div>
                     </div>
                     
-                    {/* Custom Color Editor */}
-                    {theme === 'custom' && (
-                      <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
-                        <h4 className="text-label">Custom Theme Colors</h4>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          {/* Background Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-background" className="text-caption">Background</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-background"
-                                type="text"
-                                value={customColors.background}
-                                onChange={(e) => setCustomColors({ background: e.target.value })}
-                                placeholder="oklch(0.12 0.01 240)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.background }}
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Foreground Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-foreground" className="text-caption">Foreground</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-foreground"
-                                type="text"
-                                value={customColors.foreground}
-                                onChange={(e) => setCustomColors({ foreground: e.target.value })}
-                                placeholder="oklch(0.98 0.01 240)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.foreground }}
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Primary Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-primary" className="text-caption">Primary</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-primary"
-                                type="text"
-                                value={customColors.primary}
-                                onChange={(e) => setCustomColors({ primary: e.target.value })}
-                                placeholder="oklch(0.98 0.01 240)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.primary }}
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Card Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-card" className="text-caption">Card</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-card"
-                                type="text"
-                                value={customColors.card}
-                                onChange={(e) => setCustomColors({ card: e.target.value })}
-                                placeholder="oklch(0.14 0.01 240)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.card }}
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Accent Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-accent" className="text-caption">Accent</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-accent"
-                                type="text"
-                                value={customColors.accent}
-                                onChange={(e) => setCustomColors({ accent: e.target.value })}
-                                placeholder="oklch(0.16 0.01 240)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.accent }}
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Destructive Color */}
-                          <div className="space-y-2">
-                            <Label htmlFor="color-destructive" className="text-caption">Destructive</Label>
-                            <div className="flex gap-2">
-                              <Input
-                                id="color-destructive"
-                                type="text"
-                                value={customColors.destructive}
-                                onChange={(e) => setCustomColors({ destructive: e.target.value })}
-                                placeholder="oklch(0.6 0.2 25)"
-                                className="font-mono text-xs"
-                              />
-                              <div 
-                                className="w-10 h-10 rounded border"
-                                style={{ backgroundColor: customColors.destructive }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <p className="text-caption text-muted-foreground">
-                          Use CSS color values (hex, rgb, oklch, etc.). Changes apply immediately.
-                        </p>
-                      </div>
-                    )}
-                    
+                                        
                     {/* Include Co-authored By */}
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5 flex-1">

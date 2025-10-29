@@ -10,18 +10,9 @@ html, body {
   background-color: rgba(0, 0, 0, 0);
 }
 
-/* Tauri drag region helpers */
-.tauri-drag {
-  -webkit-app-region: drag;
-}
-
-.tauri-no-drag {
-  -webkit-app-region: no-drag;
-}
-
 /* Apply rounded corners and background to body */
 body {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   background-color: var(--color-background);
 }
@@ -30,13 +21,13 @@ body {
   height: 100%;
   width: 100%;
   /* Ensure root also clips fixed-position descendants */
-  border-radius: inherit;
+  /* border-radius: inherit; */
   overflow: hidden;
 }
 
 /* Ensure the viewport itself clips fixed-position elements */
 html {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   /* Robust clipping for fixed descendants and backdrop filters */
   clip-path: inset(0 round var(--radius-lg));
@@ -88,25 +79,25 @@ html {
 /* Dark theme configuration */
 @theme {
   /* Colors */
-  --color-background: oklch(0.10 0.01 240);
+  --color-background: oklch(0.18 0.01 240);
   --color-foreground: oklch(0.95 0.01 240);
-  --color-card: oklch(0.14 0.01 240);
+  --color-card: oklch(0.23 0.01 240);
   --color-card-foreground: oklch(0.95 0.01 240);
-  --color-popover: oklch(0.13 0.01 240);
+  --color-popover: oklch(0.21 0.01 240);
   --color-popover-foreground: oklch(0.95 0.01 240);
   --color-primary: oklch(0.95 0.01 240);
-  --color-primary-foreground: oklch(0.14 0.01 240);
-  --color-secondary: oklch(0.18 0.01 240);
+  --color-primary-foreground: oklch(0.23 0.01 240);
+  --color-secondary: oklch(0.27 0.01 240);
   --color-secondary-foreground: oklch(0.95 0.01 240);
-  --color-muted: oklch(0.16 0.01 240);
+  --color-muted: oklch(0.27 0.01 240);
   --color-muted-foreground: oklch(0.65 0.01 240);
-  --color-accent: oklch(0.18 0.01 240);
+  --color-accent: oklch(0.27 0.01 240);
   --color-accent-foreground: oklch(0.95 0.01 240);
   --color-destructive: oklch(0.6 0.2 25);
   --color-destructive-foreground: oklch(0.98 0.01 240);
-  --color-border: oklch(0.20 0.01 240);
-  --color-input: oklch(0.20 0.01 240);
-  --color-ring: oklch(0.50 0.015 240);
+  --color-border: oklch(0.32 0.01 240);
+  --color-input: oklch(0.32 0.01 240);
+  --color-ring: oklch(0.55 0.015 240);
   
   /* Additional colors for status messages */
   --color-green-500: oklch(0.72 0.20 142);
@@ -196,36 +187,10 @@ html {
   --color-green-600: oklch(0.54 0.22 142);
 }
 
-/* Gray Theme */
-.theme-gray {
-  --color-background: oklch(0.18 0.01 240);
-  --color-foreground: oklch(0.95 0.01 240);
-  --color-card: oklch(0.23 0.01 240);
-  --color-card-foreground: oklch(0.95 0.01 240);
-  --color-popover: oklch(0.21 0.01 240);
-  --color-popover-foreground: oklch(0.95 0.01 240);
-  --color-primary: oklch(0.95 0.01 240);
-  --color-primary-foreground: oklch(0.23 0.01 240);
-  --color-secondary: oklch(0.27 0.01 240);
-  --color-secondary-foreground: oklch(0.95 0.01 240);
-  --color-muted: oklch(0.27 0.01 240);
-  --color-muted-foreground: oklch(0.65 0.01 240);
-  --color-accent: oklch(0.27 0.01 240);
-  --color-accent-foreground: oklch(0.95 0.01 240);
-  --color-destructive: oklch(0.6 0.2 25);
-  --color-destructive-foreground: oklch(0.98 0.01 240);
-  --color-border: oklch(0.32 0.01 240);
-  --color-input: oklch(0.32 0.01 240);
-  --color-ring: oklch(0.55 0.015 240);
-  
-  /* Additional colors for status messages */
-  --color-green-500: oklch(0.72 0.20 142);
-  --color-green-600: oklch(0.64 0.22 142);
-}
 
 /* White Theme (High Contrast Light) */
 .theme-white {
-  --color-background: oklch(0.99 0 240);
+  --color-background: oklch(0.96 0.02 95);
   --color-foreground: oklch(0.10 0 240);
   --color-card: oklch(1.0 0 240);
   --color-card-foreground: oklch(0.10 0 240);
@@ -248,11 +213,6 @@ html {
   /* Additional colors for status messages */
   --color-green-500: oklch(0.55 0.25 142);
   --color-green-600: oklch(0.47 0.27 142);
-}
-
-/* Custom Theme - CSS variables will be set dynamically by ThemeContext */
-.theme-custom {
-  /* Custom theme variables are applied dynamically via JavaScript */
 }
 
 /* Reset and base styles */
@@ -467,8 +427,7 @@ html.is-macos body {
 
 /* Markdown Editor Theme-aware Styles */
 [data-color-mode="dark"],
-.theme-dark [data-color-mode="dark"],
-.theme-gray [data-color-mode="dark"] {
+.theme-dark [data-color-mode="dark"] {
   --color-border-default: rgb(48, 54, 61);
   --color-canvas-default: rgb(13, 17, 23);
   --color-canvas-subtle: rgb(22, 27, 34);

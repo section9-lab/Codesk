@@ -552,13 +552,13 @@ export const api = {
       const result = await wailsCall<{ data: ClaudeSettings }>("get_claude_settings");
       console.log("Raw result from get_claude_settings:", result);
       
-      // The Rust backend returns ClaudeSettings { data: ... }
-      // We need to extract the data field
+      // 后端返回的格式是 { data: settings }
+      // 我们需要提取 data 字段
       if (result && typeof result === 'object' && 'data' in result) {
         return result.data;
       }
       
-      // If the result is already the settings object, return it
+      // 如果结果已经是设置对象，直接返回
       return result as ClaudeSettings;
     } catch (error) {
       console.error("Failed to get Claude settings:", error);
@@ -627,7 +627,8 @@ export const api = {
    */
   async saveClaudeSettings(settings: ClaudeSettings): Promise<string> {
     try {
-      return await wailsCall<string>("save_claude_settings", { settings });
+      // 后端现在期望直接传递 settings 对象
+      return await wailsCall<string>("save_claude_settings", settings);
     } catch (error) {
       console.error("Failed to save Claude settings:", error);
       throw error;

@@ -6,10 +6,12 @@
  */
 
 // 导入 Wails 自动生成的 IPC 绑定
-import { 
+import {
   WindowMinimise as WailsWindowMinimise,
   WindowMaximise as WailsWindowMaximise,
   WindowUnmaximise as WailsWindowUnmaximise,
+  WindowGetPosition as WailsWindowGetPosition,
+  WindowSetPosition as WailsWindowSetPosition,
   Quit as WailsQuit,
   BrowserOpenURL as WailsBrowserOpenURL
 } from '../../wailsjs/runtime';
@@ -309,6 +311,19 @@ export const wailsWindow = {
     if (detectWailsEnvironment()) {
       console.log('[Wails] Closing window');
       await WailsQuit();
+    }
+  },
+  getPosition: async () => {
+    if (detectWailsEnvironment()) {
+      console.log('[Wails] Getting window position');
+      return await WailsWindowGetPosition();
+    }
+    return { x: 0, y: 0 };
+  },
+  setPosition: async (x: number, y: number) => {
+    if (detectWailsEnvironment()) {
+      console.log('[Wails] Setting window position:', { x, y });
+      await WailsWindowSetPosition(x, y);
     }
   }
 };

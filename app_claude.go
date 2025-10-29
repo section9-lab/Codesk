@@ -23,8 +23,12 @@ func (a *App) GetClaudeSettings() (*model.ClaudeSettings, error) {
 }
 
 // SaveClaudeSettings 保存 Claude 设置
-func (a *App) SaveClaudeSettings(settings *model.ClaudeSettings) error {
-	return a.claudeProjectService.SaveClaudeSettings(settings)
+func (a *App) SaveClaudeSettings(settings map[string]interface{}) error {
+	// 将普通 map 转换为 ClaudeSettings 结构体
+	claudeSettings := &model.ClaudeSettings{
+		Data: settings,
+	}
+	return a.claudeProjectService.SaveClaudeSettings(claudeSettings)
 }
 
 // LoadSessionHistory 加载会话历史
@@ -129,7 +133,7 @@ func (a *App) CheckClaudeVersion() (bool, string, error) {
 }
 
 // ListClaudeInstallations 列出 Claude 安装位置
-func (a *App) ListClaudeInstallations() []string {
+func (a *App) ListClaudeInstallations() []model.ClaudeInstallation {
 	return a.claudeExecutionService.ListClaudeInstallations()
 }
 

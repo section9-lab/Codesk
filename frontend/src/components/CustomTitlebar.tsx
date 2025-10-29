@@ -23,6 +23,8 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,12 +68,86 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
     }
   };
 
+  const handleMouseDown = async (e: React.MouseEvent) => {
+    // 只在左键点击时启动拖动
+    if (e.button !== 0) return;
+
+    // 检查点击的目标是否是按钮或可交互元素
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('[role="button"]')) {
+      return;
+    }
+
+    try {
+      // 获取当前窗口位置
+      const position = await wailsWindow.getPosition();
+      setDragStart({
+        x: e.screenX - position.x,
+        y: e.screenY - position.y
+      });
+      setIsDragging(true);
+      e.preventDefault();
+    } catch (error) {
+      console.error('Failed to start window drag:', error);
+    }
+  };
+
+  const handleMouseMove = async (e: React.MouseEvent) => {
+    if (!isDragging) return;
+
+    try {
+      const newX = e.screenX - dragStart.x;
+      const newY = e.screenY - dragStart.y;
+      await wailsWindow.setPosition(newX, newY);
+    } catch (error) {
+      console.error('Failed to move window:', error);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // 全局鼠标事件监听
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      try {
+        const newX = e.screenX - dragStart.x;
+        const newY = e.screenY - dragStart.y;
+        wailsWindow.setPosition(newX, newY);
+      } catch (error) {
+        console.error('Failed to move window:', error);
+      }
+    };
+
+    const handleGlobalMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isDragging, dragStart]);
+
   return (
     <TooltipProvider>
-    <div 
-      className="relative z-[200] h-11 bg-background/95 backdrop-blur-sm flex items-center justify-between select-none border-b border-border/50"
+    <div
+      className={`relative z-[200] h-11 bg-background/95 backdrop-blur-sm flex items-center justify-between select-none border-b border-border/50 ${
+        isDragging ? 'cursor-grabbing' : 'cursor-grab'
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
     >
       {/* Left side - macOS Traffic Light buttons */}
       <div className="flex items-center space-x-2 pl-5">
@@ -97,7 +173,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
               handleMinimize();
             }}
             className="group relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-all duration-200 flex items-center justify-center"
-            title="Minimize"
+                        title="Minimize"
           >
             {isHovered && (
               <Minus size={8} className="text-yellow-900 opacity-60 group-hover:opacity-100" />
@@ -111,7 +187,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
               handleMaximize();
             }}
             className="group relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center"
-            title="Maximize"
+                        title="Maximize"
           >
             {isHovered && (
               <Square size={6} className="text-green-900 opacity-60 group-hover:opacity-100" />
@@ -137,8 +213,8 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onAgentsClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
-              >
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                              >
                 <Bot size={16} />
               </motion.button>
             </TooltipSimple>
@@ -150,8 +226,8 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onUsageClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
-              >
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                              >
                 <BarChart3 size={16} />
               </motion.button>
             </TooltipSimple>
@@ -169,8 +245,8 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 onClick={onSettingsClick}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors "
-              >
+                className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                              >
                 <Settings size={16} />
               </motion.button>
             </TooltipSimple>
@@ -184,7 +260,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.15 }}
                 className="p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1"
-              >
+                              >
                 <MoreVertical size={16} />
               </motion.button>
             </TooltipSimple>
@@ -199,7 +275,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                         setIsDropdownOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-3"
-                    >
+                                          >
                       <FileText size={14} />
                       <span>CLAUDE.md</span>
                     </button>
@@ -212,7 +288,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                         setIsDropdownOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-3"
-                    >
+                                          >
                       <Network size={14} />
                       <span>MCP Servers</span>
                     </button>
@@ -225,7 +301,7 @@ export const CustomTitlebar: React.FC<CustomTitlebarProps> = ({
                         setIsDropdownOpen(false);
                       }}
                       className="w-full px-4 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-3"
-                    >
+                                          >
                       <Info size={14} />
                       <span>About</span>
                     </button>

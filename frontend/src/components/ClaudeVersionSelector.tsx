@@ -213,7 +213,7 @@ export const ClaudeVersionSelector: React.FC<ClaudeVersionSelectorProps> = ({
         <Select value={selectedInstallation?.path || ""} onValueChange={handleInstallationChange}>
           <SelectTrigger id="claude-installation" className="w-full">
             <SelectValue placeholder="Choose Claude installation">
-              {selectedInstallation && (
+              {selectedInstallation && selectedInstallation.path && (
                 <div className="flex items-center gap-2">
                   <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="font-mono text-sm">{selectedInstallation.path.split('/').pop() || selectedInstallation.path}</span>
@@ -254,7 +254,7 @@ export const ClaudeVersionSelector: React.FC<ClaudeVersionSelectorProps> = ({
           </SelectContent>
         </Select>
         
-        {selectedInstallation && (
+        {selectedInstallation && selectedInstallation.path && (
           <div className="flex items-start gap-2 p-2 bg-muted/50 rounded-md">
             <Info className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
             <div className="text-xs text-muted-foreground">
@@ -285,7 +285,7 @@ export const ClaudeVersionSelector: React.FC<ClaudeVersionSelectorProps> = ({
           <Select value={selectedInstallation?.path || ""} onValueChange={handleInstallationChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select Claude installation">
-                {selectedInstallation && (
+                {selectedInstallation && selectedInstallation.path && (
                   <div className="flex items-center gap-2">
                     {getInstallationIcon(selectedInstallation)}
                     <span className="truncate">{selectedInstallation.path}</span>
@@ -345,7 +345,7 @@ export const ClaudeVersionSelector: React.FC<ClaudeVersionSelectorProps> = ({
         </div>
 
         {/* Installation Details */}
-        {selectedInstallation && (
+        {selectedInstallation && selectedInstallation.path && (
           <div className="p-3 bg-muted rounded-lg space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Selected Installation</span>
