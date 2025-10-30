@@ -182,8 +182,8 @@ const wailsMethodMap: Record<string, keyof typeof AppMethods | string> = {
   'slash_command_delete': 'DeleteSlashCommand',
 
   // 其他方法
-  'get_claude_binary_path': 'not_implemented', // 需要在 Go 后端添加
-  'set_claude_binary_path': 'not_implemented', // 需要在 Go 后端添加
+  'get_claude_binary_path': 'GetClaudeBinaryPath', // ✅ 已实现
+  'set_claude_binary_path': 'SetClaudeBinaryPath', // ✅ 已实现
   'list_claude_installations': 'ListClaudeInstallations',
   'get_recently_modified_files': 'GetRecentlyModifiedFiles',
   'get_proxy_settings': 'GetProxySettings',

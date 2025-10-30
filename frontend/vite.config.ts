@@ -5,7 +5,9 @@ import { fileURLToPath, URL } from "node:url";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss({
+    config: './tailwind.config.js'
+  })],
 
   // Path resolution
   resolve: {

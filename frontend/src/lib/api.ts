@@ -549,15 +549,15 @@ export const api = {
    */
   async getClaudeSettings(): Promise<ClaudeSettings> {
     try {
-      const result = await wailsCall<{ data: ClaudeSettings }>("get_claude_settings");
+      const result = await wailsCall<ClaudeSettings>("get_claude_settings");
       console.log("Raw result from get_claude_settings:", result);
-      
-      // 后端返回的格式是 { data: settings }
-      // 我们需要提取 data 字段
+
+      // 后端直接返回 ClaudeSettings 对象，其结构为 { data: {...} }
+      // 我们需要返回 data 字段的内容
       if (result && typeof result === 'object' && 'data' in result) {
-        return result.data;
+        return result.data as ClaudeSettings;
       }
-      
+
       // 如果结果已经是设置对象，直接返回
       return result as ClaudeSettings;
     } catch (error) {

@@ -92,9 +92,10 @@ func (a *App) ContinueClaude(projectPath, sessionID, model string) (*claude.Exec
 }
 
 // ResumeClaude 恢复 Claude 执行
-func (a *App) ResumeClaude(projectPath, sessionID, model string) (*claude.ExecuteResult, error) {
+func (a *App) ResumeClaude(projectPath, sessionID, prompt, model string) (*claude.ExecuteResult, error) {
 	opts := claude.ExecuteOptions{
 		ProjectPath: projectPath,
+		Task:        prompt,
 		Model:       model,
 		SessionID:   sessionID,
 		Resume:      true,

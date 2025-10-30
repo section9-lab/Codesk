@@ -142,8 +142,8 @@ export const Settings: React.FC<SettingsProps> = ({
       setError(null);
       const loadedSettings = await api.getClaudeSettings();
 
-      // Backend returns {Data: {...}} but we want the inner data
-      const settingsData = loadedSettings?.data || loadedSettings;
+      // API now returns the settings data directly (not wrapped in a data field)
+      const settingsData = loadedSettings;
 
       // Ensure settingsData is an object
       if (!settingsData || typeof settingsData !== 'object') {

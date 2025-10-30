@@ -1,12 +1,14 @@
 package claude
 
 import (
+	"bufio"
 	"Codesk/backend/config"
 	"Codesk/backend/model"
 	"Codesk/backend/process"
 	"Codesk/backend/util"
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -62,6 +64,19 @@ func (s *ExecutionService) Execute(opts ExecuteOptions) (*ExecuteResult, error) 
 	// 设置工作目录
 	cmd.Dir = opts.ProjectPath
 
+	// 创建管道来捕获输出
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		cancel()
+		return nil, fmt.Errorf("failed to create stdout pipe: %w", err)
+	}
+
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		cancel()
+		return nil, fmt.Errorf("failed to create stderr pipe: %w", err)
+	}
+
 	// 启动进程
 	if err := cmd.Start(); err != nil {
 		cancel()
@@ -70,6 +85,9 @@ func (s *ExecutionService) Execute(opts ExecuteOptions) (*ExecuteResult, error) 
 
 	// 注册进程
 	process.GetManager().Register(sessionID, opts.ProjectPath, cmd, cancel)
+
+	// 启动输出读取协程
+	go s.readOutput(stdout, stderr, sessionID)
 
 	// 异步等待进程完成
 	go s.waitForCompletion(cmd, sessionID, cancel)
@@ -99,6 +117,10 @@ func (s *ExecutionService) buildCommand(ctx context.Context, claudePath string, 
 		args = append(args, "--continue")
 	} else if opts.Resume {
 		args = append(args, "--resume")
+		// Resume模式也需要包含prompt
+		if opts.Task != "" {
+			args = append(args, opts.Task)
+		}
 	} else if opts.Task != "" {
 		args = append(args, opts.Task)
 	}
@@ -255,4 +277,55 @@ func (s *ExecutionService) CreateProject(projectPath string) error {
 // OpenNewSession 打开新会话（生成 session ID）
 func (s *ExecutionService) OpenNewSession() string {
 	return uuid.New().String()
+}
+
+// readOutput 读取进程输出并保存到session文件
+func (s *ExecutionService) readOutput(stdout, stderr io.ReadCloser, sessionID string) {
+	defer stdout.Close()
+	defer stderr.Close()
+
+	// 创建session输出文件
+	sessionFile := filepath.Join(config.GetClaudeDir(), "session-env", sessionID+".jsonl")
+	if err := os.MkdirAll(filepath.Dir(sessionFile), 0755); err != nil {
+		fmt.Printf("Failed to create session directory: %v\n", err)
+		return
+	}
+
+	file, err := os.OpenFile(sessionFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Printf("Failed to create session file: %v\n", err)
+		return
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+
+	// 读取stdout
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			line := scanner.Text()
+			// 写入session文件
+			fmt.Fprintf(writer, "%s\n", line)
+			writer.Flush()
+
+			// 这里可以添加事件发送逻辑
+			// TODO: 发送claude-output事件
+		}
+	}()
+
+	// 读取stderr
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			line := scanner.Text()
+			// 写入session文件
+			fmt.Fprintf(writer, "%s\n", line)
+			writer.Flush()
+
+			// 这里可以添加错误事件发送逻辑
+			// TODO: 发送claude-error事件
+		}
+	}()
 }

@@ -94,6 +94,10 @@ export function GetCheckpointSettings(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetCheckpointSettings'](arg1, arg2, arg3);
 }
 
+export function GetClaudeBinaryPath() {
+  return window['go']['main']['App']['GetClaudeBinaryPath']();
+}
+
 export function GetClaudeSessionOutput(arg1, arg2) {
   return window['go']['main']['App']['GetClaudeSessionOutput'](arg1, arg2);
 }
@@ -250,8 +254,8 @@ export function RestoreCheckpoint(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['RestoreCheckpoint'](arg1, arg2, arg3, arg4);
 }
 
-export function ResumeClaude(arg1, arg2, arg3) {
-  return window['go']['main']['App']['ResumeClaude'](arg1, arg2, arg3);
+export function ResumeClaude(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['ResumeClaude'](arg1, arg2, arg3, arg4);
 }
 
 export function SaveClaudeMdFile(arg1, arg2) {
@@ -276,6 +280,10 @@ export function SaveSlashCommand(arg1) {
 
 export function SearchFiles(arg1, arg2, arg3) {
   return window['go']['main']['App']['SearchFiles'](arg1, arg2, arg3);
+}
+
+export function SetClaudeBinaryPath(arg1) {
+  return window['go']['main']['App']['SetClaudeBinaryPath'](arg1);
 }
 
 export function StorageDeleteRow(arg1, arg2) {

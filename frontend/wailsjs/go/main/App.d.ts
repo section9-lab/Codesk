@@ -50,6 +50,8 @@ export function GetCheckpointDiff(arg1:string,arg2:string,arg3:string,arg4:strin
 
 export function GetCheckpointSettings(arg1:string,arg2:string,arg3:string):Promise<checkpoint.CheckpointSettings>;
 
+export function GetClaudeBinaryPath():Promise<string>;
+
 export function GetClaudeSessionOutput(arg1:string,arg2:string):Promise<string>;
 
 export function GetClaudeSessionStatus(arg1:string,arg2:string):Promise<string>;
@@ -128,7 +130,7 @@ export function ReadClaudeMdFile(arg1:string):Promise<string>;
 
 export function RestoreCheckpoint(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;
 
-export function ResumeClaude(arg1:string,arg2:string,arg3:string):Promise<claude.ExecuteResult>;
+export function ResumeClaude(arg1:string,arg2:string,arg3:string,arg4:string):Promise<claude.ExecuteResult>;
 
 export function SaveClaudeMdFile(arg1:string,arg2:string):Promise<void>;
 
@@ -141,6 +143,8 @@ export function SaveProxySettings(arg1:model.ProxySettings):Promise<void>;
 export function SaveSlashCommand(arg1:model.SlashCommand):Promise<void>;
 
 export function SearchFiles(arg1:string,arg2:string,arg3:number):Promise<Array<string>>;
+
+export function SetClaudeBinaryPath(arg1:string):Promise<void>;
 
 export function StorageDeleteRow(arg1:string,arg2:number):Promise<void>;
 

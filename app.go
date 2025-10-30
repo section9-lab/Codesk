@@ -184,3 +184,37 @@ func (a *App) OpenExternal(url string) error {
 	runtime.BrowserOpenURL(a.ctx, url)
 	return nil
 }
+
+// GetClaudeBinaryPath gets the stored Claude binary path from settings
+func (a *App) GetClaudeBinaryPath() (string, error) {
+	settings, err := a.claudeProjectService.GetClaudeSettings()
+	if err != nil {
+		return "", err
+	}
+
+	if settings.Data == nil {
+		return "", nil
+	}
+
+	if path, ok := settings.Data["claude_binary_path"].(string); ok {
+		return path, nil
+	}
+
+	return "", nil
+}
+
+// SetClaudeBinaryPath sets the Claude binary path in settings
+func (a *App) SetClaudeBinaryPath(path string) error {
+	settings, err := a.claudeProjectService.GetClaudeSettings()
+	if err != nil {
+		return err
+	}
+
+	if settings.Data == nil {
+		settings.Data = make(map[string]interface{})
+	}
+
+	settings.Data["claude_binary_path"] = path
+
+	return a.claudeProjectService.SaveClaudeSettings(settings)
+}
