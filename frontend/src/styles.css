@@ -5,23 +5,24 @@
    ========================================================================== */
 
 /* 使用位置：整个应用窗口的圆角效果 */
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border-radius: 15px; 
-  /* 防止内容溢出 */
-  overflow: hidden;
-   /* 网页内容背景，Alpha 可以为 1 */
-  background-color: rgba(27, 38, 54, 0);
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 15px;
+    /* 防止内容溢出 */
+    overflow: hidden;
+    /* 网页内容背景，Alpha 可以为 1 */
+    background-color: rgba(27, 38, 54, 0);
 }
 
 /* 使用位置：透明窗口的圆角裁剪 */
 html {
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  /* clip-path: inset(0 round 20px); */
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    /* clip-path: inset(0 round 20px); */
 }
 
 /* ==========================================================================
@@ -31,11 +32,11 @@ html {
 /* Inter 字体 - 本地字体文件 */
 /* 使用位置：整个应用的字体 */
 @font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/src/assets/fonts/inter/Inter.ttf') format('truetype-variations');
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/src/assets/fonts/inter/Inter.ttf") format("truetype-variations");
 }
 
 /* ==========================================================================
@@ -45,83 +46,88 @@ html {
 
 /* 深色主题配置 */
 @theme {
-  /* 颜色变量 - 被所有主题相关的组件使用 */
-  --color-background: oklch(0.18 0.01 240);
-  --color-foreground: oklch(0.95 0.01 240);
-  --color-card: oklch(0.23 0.01 240);
-  --color-card-foreground: oklch(0.95 0.01 240);
-  --color-popover: oklch(0.21 0.01 240);
-  --color-popover-foreground: oklch(0.95 0.01 240);
-  --color-primary: oklch(0.95 0.01 240);
-  --color-primary-foreground: oklch(0.23 0.01 240);
-  --color-secondary: oklch(0.27 0.01 240);
-  --color-secondary-foreground: oklch(0.95 0.01 240);
-  --color-muted: oklch(0.27 0.01 240);
-  --color-muted-foreground: oklch(0.65 0.01 240);
-  --color-accent: oklch(0.27 0.01 240);
-  --color-accent-foreground: oklch(0.95 0.01 240);
-  --color-destructive: oklch(0.6 0.2 25);
-  --color-destructive-foreground: oklch(0.98 0.01 240);
-  --color-border: oklch(0.32 0.01 240);
-  --color-input: oklch(0.32 0.01 240);
-  --color-ring: oklch(0.55 0.015 240);
-  
-  /* 状态消息的额外颜色 - 被 BashWidget 等组件使用 */
-  --color-green-500: oklch(0.72 0.20 142);
-  --color-green-600: oklch(0.64 0.22 142);
+    /* 颜色变量 - 被所有主题相关的组件使用 */
+    --color-background: oklch(0.22 0.01 240);
+    --color-foreground: oklch(0.95 0.01 240);
+    --color-card: oklch(0.23 0.01 240);
+    --color-card-foreground: oklch(0.95 0.01 240);
+    --color-popover: oklch(0.21 0.01 240);
+    --color-popover-foreground: oklch(0.95 0.01 240);
+    --color-primary: oklch(0.95 0.01 240);
+    --color-primary-foreground: oklch(0.23 0.01 240);
+    --color-secondary: oklch(0.27 0.01 240);
+    --color-secondary-foreground: oklch(0.95 0.01 240);
+    --color-muted: oklch(0.27 0.01 240);
+    --color-muted-foreground: oklch(0.65 0.01 240);
+    --color-accent: oklch(0.27 0.01 240);
+    --color-accent-foreground: oklch(0.95 0.01 240);
+    --color-destructive: oklch(0.6 0.2 25);
+    --color-destructive-foreground: oklch(0.98 0.01 240);
+    --color-border: oklch(0.32 0.01 240);
+    --color-input: oklch(0.32 0.01 240);
+    --color-ring: oklch(0.55 0.015 240);
 
-  /* 边框半径 - 被所有圆角组件使用 */
-  --radius-sm: 0.25rem;
-  --radius-base: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+    /* 状态消息的额外颜色 - 被 BashWidget 等组件使用 */
+    --color-green-500: oklch(0.72 0.2 142);
+    --color-green-600: oklch(0.64 0.22 142);
 
-  /* 字体 - 被整个应用使用 */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-  
-  /* 字体粗细 - 被文本样式类使用 */
-  --font-weight-thin: 100;
-  --font-weight-extralight: 200;
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900;
-  
-  /* 字体大小 - 被文本样式类使用 */
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.875rem;     /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
-  --text-4xl: 2.25rem;     /* 36px */
-  --text-5xl: 3rem;        /* 48px */
-  
-  /* 行高 - 被文本样式类使用 */
-  --leading-none: 1;
-  --leading-tight: 1.25;
-  --leading-snug: 1.375;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
-  --leading-loose: 1.75;
-  
-  /* 字间距 - 被文本样式类使用 */
-  --tracking-tighter: -0.05em;
-  --tracking-tight: -0.025em;
-  --tracking-normal: 0;
-  --tracking-wide: 0.025em;
-  --tracking-wider: 0.05em;
-  --tracking-widest: 0.1em;
+    /* 边框半径 - 被所有圆角组件使用 */
+    --radius-sm: 0.25rem;
+    --radius-base: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
 
-  /* 过渡动画 - 被 Tailwind 工具类使用 */
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* 字体 - 被整个应用使用 */
+    --font-sans:
+        "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    --font-mono:
+        ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono",
+        Menlo, monospace;
+
+    /* 字体粗细 - 被文本样式类使用 */
+    --font-weight-thin: 100;
+    --font-weight-extralight: 200;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* 字体大小 - 被文本样式类使用 */
+    --text-xs: 0.75rem; /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem; /* 16px */
+    --text-lg: 1.125rem; /* 18px */
+    --text-xl: 1.25rem; /* 20px */
+    --text-2xl: 1.5rem; /* 24px */
+    --text-3xl: 1.875rem; /* 30px */
+    --text-4xl: 2.25rem; /* 36px */
+    --text-5xl: 3rem; /* 48px */
+
+    /* 行高 - 被文本样式类使用 */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 1.75;
+
+    /* 字间距 - 被文本样式类使用 */
+    --tracking-tighter: -0.05em;
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.025em;
+    --tracking-wider: 0.05em;
+    --tracking-widest: 0.1em;
+
+    /* 过渡动画 - 被 Tailwind 工具类使用 */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 /* ==========================================================================
@@ -129,34 +135,47 @@ html {
    ========================================================================== */
 
 /* 默认是深色主题 - 已在上方定义 */
-
-/* 浅色主题 - 被 ThemeProvider 使用 */
+/* 浅色主题 - 柔和不刺眼版本 */
 .theme-light {
-  --color-background: oklch(0.98 0.01 240);
-  --color-foreground: oklch(0.12 0.01 240);
-  --color-card: oklch(0.96 0.01 240);
-  --color-card-foreground: oklch(0.12 0.01 240);
-  --color-popover: oklch(0.98 0.01 240);
-  --color-popover-foreground: oklch(0.12 0.01 240);
-  --color-primary: oklch(0.12 0.01 240);
-  --color-primary-foreground: oklch(0.98 0.01 240);
-  --color-secondary: oklch(0.94 0.01 240);
-  --color-secondary-foreground: oklch(0.12 0.01 240);
-  --color-muted: oklch(0.94 0.01 240);
-  --color-muted-foreground: oklch(0.45 0.01 240);
-  --color-accent: oklch(0.94 0.01 240);
-  --color-accent-foreground: oklch(0.12 0.01 240);
-  --color-destructive: oklch(0.6 0.2 25);
-  --color-destructive-foreground: oklch(0.98 0.01 240);
-  --color-border: oklch(0.90 0.01 240);
-  --color-input: oklch(0.90 0.01 240);
-  --color-ring: oklch(0.52 0.015 240);
-  
-  /* 状态消息的额外颜色 */
-  --color-green-500: oklch(0.62 0.20 142);
-  --color-green-600: oklch(0.54 0.22 142);
-}
+    /* 基础背景/文字：降低亮度，整体变柔 */
+    --color-background: oklch(0.97 0.01 240); /* 原0.98 → 0.92（背景暗一点） */
+    --color-foreground: oklch(
+        0.15 0.01 240
+    ); /* 原0.12 → 0.15（文字稍亮，更柔和） */
 
+    /* 卡片/弹出层：降低背景亮度，保持层级感 */
+    --color-card: oklch(0.9 0.01 240); /* 原0.96 → 0.9（卡片暗一点） */
+    --color-card-foreground: oklch(0.15 0.01 240); /* 卡片文字同步调整 */
+    --color-popover: oklch(0.92 0.01 240); /* 弹出层背景 */
+    --color-popover-foreground: oklch(0.15 0.01 240); /* 弹出层文字 */
+
+    /* 主色/强调色：调整亮度与饱和度，更符合浅色主题 */
+    --color-primary: oklch(
+        0.2 0.01 240
+    ); /* 原0.12 → 0.2（主色变亮，避免过深） */
+    --color-primary-foreground: oklch(0.98 0.01 240); /* 主色文字保持高亮 */
+    --color-secondary: oklch(0.88 0.01 240); /* 原0.94 → 0.88（次要色暗一点） */
+    --color-secondary-foreground: oklch(0.15 0.01 240); /* 次要文字 */
+    --color-accent: oklch(0.88 0.01 240); /* 强调色 */
+    --color-accent-foreground: oklch(0.15 0.01 240); /* 强调文字 */
+
+    /* 边框/输入框：降低亮度，减少“白亮”感 */
+    --color-border: oklch(0.85 0.01 240); /* 原0.90 → 0.85（边框暗一点） */
+    --color-input: oklch(0.85 0.01 240); /* 输入框背景 */
+
+    /* 状态色：微调亮度，保持辨识度 */
+    --color-destructive: oklch(0.5 0.2 25); /* 原0.6 → 0.5（破坏色稍亮） */
+    --color-destructive-foreground: oklch(0.98 0.01 240); /* 破坏色文字 */
+
+    /* 其他辅助色：降低亮度 */
+    --color-muted: oklch(0.88 0.01 240); /* 原0.94 → 0.88（ muted 背景） */
+    --color-muted-foreground: oklch(0.45 0.01 240); /* muted 文字 */
+    --color-ring: oklch(0.42 0.015 240); /* 原0.52 → 0.42（焦点环暗一点） */
+
+    /* 状态消息：微调绿色亮度，更柔和 */
+    --color-green-500: oklch(0.58 0.2 142); /* 原0.62 → 0.58 */
+    --color-green-600: oklch(0.5 0.22 142); /* 原0.54 → 0.5 */
+}
 
 /* ==========================================================================
    基础重置样式 - 必须保留
@@ -164,26 +183,26 @@ html {
 
 /* 边框颜色重置 - 被所有组件使用 */
 * {
-  border-color: var(--color-border);
+    border-color: var(--color-border);
 }
 
 /* 颜色方案 - 被整个应用使用 */
 html {
-  color-scheme: dark;
+    color-scheme: dark;
 }
 
 /* 基础 body 样式 - 被整个应用使用 */
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
 }
 
 /* 占位符文本样式 - 被所有输入框使用 */
 input::placeholder,
 textarea::placeholder {
-  color: var(--color-muted-foreground);
-  opacity: 0.6;
+    color: var(--color-muted-foreground);
+    opacity: 0.6;
 }
 
 /* 交互元素的指针样式 - 被所有按钮和可点击元素使用 */
@@ -195,14 +214,14 @@ a,
 [role="tab"],
 [tabindex]:not([tabindex="-1"]),
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 /* 禁用元素的指针样式 - 被所有禁用元素使用 */
 button:disabled,
 [disabled],
 .disabled {
-  cursor: not-allowed !important;
+    cursor: not-allowed !important;
 }
 
 /* ==========================================================================
@@ -211,15 +230,15 @@ button:disabled,
 
 /* 移除所有全局焦点样式 - 被整个应用使用 */
 * {
-  outline: none !important;
-  outline-offset: 0 !important;
+    outline: none !important;
+    outline-offset: 0 !important;
 }
 
 *:focus,
 *:focus-visible,
 *:focus-within {
-  outline: none !important;
-  box-shadow: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* 特别移除表单元素的焦点样式 - 被所有表单元素使用 */
@@ -235,9 +254,9 @@ button:focus-visible,
 [role="button"]:focus-visible,
 [role="combobox"]:focus,
 [role="combobox"]:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-  border-color: var(--color-input) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: var(--color-input) !important;
 }
 
 /* 移除 ring 样式 - 被 Tailwind 类使用 */
@@ -249,7 +268,7 @@ button:focus-visible,
 .ring-offset-1,
 .ring-offset-2,
 .ring-offset {
-  box-shadow: none !important;
+    box-shadow: none !important;
 }
 
 /* ==========================================================================
@@ -259,8 +278,8 @@ button:focus-visible,
 /* macOS 专用：透明自定义装饰窗口的微妙窗口轮廓 */
 /* 使用位置：macOS 窗口边框 */
 html.is-macos body {
-  /* 保持圆角形状并添加微妙的 1px 内部轮廓 */
-  box-shadow: inset 0 0 0 1px var(--color-border);
+    /* 保持圆角形状并添加微妙的 1px 内部轮廓 */
+    box-shadow: inset 0 0 0 1px var(--color-border);
 }
 
 /* ==========================================================================
@@ -269,33 +288,33 @@ html.is-macos body {
 
 /* Firefox - 纤细且简约 */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
 }
 
 /* 全局 webkit 滚动条 - 超薄且优雅 */
 /* 使用位置：所有滚动条 */
 ::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+    width: 3px;
+    height: 3px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 2px;
-  transition: background-color 0.2s ease;
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.6);
+    background-color: rgba(156, 163, 175, 0.6);
 }
 
 ::-webkit-scrollbar-corner {
-  background: transparent;
+    background: transparent;
 }
 
 /* 代码块 - 稍大以获得更好的可用性 */
@@ -303,19 +322,19 @@ html.is-macos body {
 pre::-webkit-scrollbar,
 .w-md-editor-content::-webkit-scrollbar,
 code::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+    width: 8px;
+    height: 8px;
 }
 
 pre::-webkit-scrollbar-thumb,
 .w-md-editor-content::-webkit-scrollbar-thumb,
 code::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.4);
-  border-radius: 4px;
+    background-color: rgba(156, 163, 175, 0.4);
+    border-radius: 4px;
 }
 
 pre::-webkit-scrollbar-thumb:hover,
 .w-md-editor-content::-webkit-scrollbar-thumb:hover,
 code::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.6);
+    background-color: rgba(156, 163, 175, 0.6);
 }
