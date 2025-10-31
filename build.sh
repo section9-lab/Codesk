@@ -203,13 +203,6 @@ show_summary() {
 # 交互选项
 interactive_options() {
     echo
-    read -p "是否打开文件所在文件夹? [y/N] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        open "$HOME/Downloads"
-        log "已打开下载文件夹"
-    fi
-    
     read -p "是否打开 DMG 文件进行安装测试? [y/N] " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then

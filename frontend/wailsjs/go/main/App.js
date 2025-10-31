@@ -286,6 +286,10 @@ export function SetClaudeBinaryPath(arg1) {
   return window['go']['main']['App']['SetClaudeBinaryPath'](arg1);
 }
 
+export function SetSetting(arg1, arg2) {
+  return window['go']['main']['App']['SetSetting'](arg1, arg2);
+}
+
 export function StorageDeleteRow(arg1, arg2) {
   return window['go']['main']['App']['StorageDeleteRow'](arg1, arg2);
 }

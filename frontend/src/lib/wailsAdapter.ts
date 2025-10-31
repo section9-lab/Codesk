@@ -174,6 +174,7 @@ const wailsMethodMap: Record<string, keyof typeof AppMethods | string> = {
   'storage_insert_row': 'StorageInsertRow',
   'storage_execute_sql': 'StorageExecuteSQL',
   'storage_reset_database': 'StorageResetDatabase',
+  'set_setting': 'SetSetting',
 
   // Slash Commands 相关方法
   'slash_commands_list': 'ListSlashCommands',

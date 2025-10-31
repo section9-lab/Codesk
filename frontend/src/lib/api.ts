@@ -1788,17 +1788,8 @@ export const api = {
           // best-effort; continue to persist in DB
         }
       }
-      // Try to update first
-      try {
-        await this.storageUpdateRow(
-          'app_settings',
-          { key },
-          { value }
-        );
-      } catch (updateError) {
-        // If update fails (row doesn't exist), insert new row
-        await this.storageInsertRow('app_settings', { key, value });
-      }
+      // Use the dedicated SetSetting method which handles insert/update automatically
+      await wailsCall<void>("set_setting", { key, value });
     } catch (error) {
       console.error(`Failed to save setting ${key}:`, error);
       throw error;

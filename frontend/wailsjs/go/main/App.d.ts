@@ -146,6 +146,8 @@ export function SearchFiles(arg1:string,arg2:string,arg3:number):Promise<Array<s
 
 export function SetClaudeBinaryPath(arg1:string):Promise<void>;
 
+export function SetSetting(arg1:string,arg2:string):Promise<void>;
+
 export function StorageDeleteRow(arg1:string,arg2:number):Promise<void>;
 
 export function StorageExecuteSQL(arg1:string,arg2:Array<any>):Promise<model.SQLResult>;

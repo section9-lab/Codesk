@@ -143,3 +143,8 @@ func (a *App) StorageExecuteSQL(query string, args ...interface{}) (*model.SQLRe
 func (a *App) StorageResetDatabase() error {
 	return a.storageService.ResetDatabase()
 }
+
+// SetSetting 设置应用设置
+func (a *App) SetSetting(key, value string) error {
+	return a.storageService.SetSetting(key, value)
+}
